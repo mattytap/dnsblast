@@ -355,7 +355,7 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("int \n", ai);
+    printf("\n", ai);
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(0U);
