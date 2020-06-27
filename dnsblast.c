@@ -156,7 +156,14 @@ get_random_name(char * const name, size_t name_size)
     name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
     name[4] = '.';    name[5] = 'c';    name[6] = 'o';    name[7] = 'm';
     name[8] = 0;
-    name[0]  = '1.1.1.1';
+    name[1] = '1';
+    name[2] = '.';
+    name[3] = '1';
+    name[4] = '.';
+    name[5] = '1';
+    name[6] = '.';
+    name[7] = '1';
+    name[8] = 0;
 printf("%s \n",name);
     return 0;
 }
