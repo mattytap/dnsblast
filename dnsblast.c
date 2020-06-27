@@ -157,7 +157,7 @@ get_random_name(char * const name, size_t name_size)
     name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
     name[4] = '.';    name[5] = 'c';    name[6] = 'o';    name[7] = 'm';
     name[8] = 0;
-
+printf("%s",name);
     return 0;
 }
 
@@ -373,7 +373,6 @@ main(int argc, char *argv[])
     context.sending = 0;
     while (context.sent_packets != context.received_packets) {
         throttled_receive(&context);
-        printf("%ld \n",context.sent_packets);
     }
     freeaddrinfo(ai);
     assert(close(sock) == 0);
