@@ -372,7 +372,7 @@ main(int argc, char *argv[])
     context.sending = 0;
     while (context.sent_packets != context.received_packets) {
         throttled_receive(&context);
-        printf("%i",Context_);
+        printf("Context * \n",context);
     }
     freeaddrinfo(ai);
     assert(close(sock) == 0);
