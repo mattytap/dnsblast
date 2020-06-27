@@ -238,7 +238,7 @@ update_status(const Context * const context)
         rate = context->pps;
     }
     printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \r",
+           "Ratio: [%.2f%%]  \n",
            context->sent_packets, context->received_packets, rate,
            (double) context->received_packets * 100.0 /
            (double) context->sent_packets);
@@ -355,6 +355,7 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
+    printf("\n");
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(0U);
@@ -364,6 +365,7 @@ main(int argc, char *argv[])
             get_random_name(name, sizeof name);
         }
         type = get_random_type();
+        printf("%s %d \n",name, type);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
