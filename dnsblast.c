@@ -71,7 +71,7 @@ encode_name(unsigned char ** const encoded_ptr, size_t encoded_size,
     }
     *encoded++ = 0;
     *encoded_ptr = encoded;
-    printf("",encoded_ptr);
+    printf("%s",encoded_ptr);
     return 0;
 }
 
