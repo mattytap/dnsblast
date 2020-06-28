@@ -383,13 +383,15 @@ main(int argc, char *argv[])
     printf("%ldpps\n",pps);
     do {
         printf("================\n%ld\n",send_count);
-        if (rand() > REPEATED_NAME_PROBABILITY) {
-            get_random_name(name, sizeof name);
-        }
-        type = get_random_type();
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
             type = 12U;
+        }
+        else {
+            if (rand() > REPEATED_NAME_PROBABILITY) {
+                get_random_name(name, sizeof name);
+            }
+            type = get_random_type();
         }
         printf("    %s %d\n", name, type);
         blast(&context, name, type);
