@@ -167,6 +167,7 @@ get_random_ptr(char * const name, size_t name_size)
     const float r1 = 256 * rand(), r2 = rand(), r3 = rand(), r4 = rand();
     char hammer[1000];
     sprintf(hammer, "%f", r1);
+    name[0] = '000.000.000.000';
     name[0] = hammer[0];
     name[3] = '.';
     name[4] = 256 * r2;
