@@ -156,14 +156,27 @@ get_random_name(char * const name, size_t name_size)
     name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
     name[4] = '.';    name[5] = 'c';    name[6] = 'o';    name[7] = 'm';
     name[8] = 0;
-    name[0] = '1';
-    name[1] = '.';
-    name[2] = '1';
-    name[3] = '.';
-    name[4] = '1';
-    name[5] = '.';
-    name[6] = '1';
+printf("    %s\n",name);
+    return 0;
+}
+
+static int
+get_random_ptr(char * const name, size_t name_size)
+{
+    const char charset_alnum[10] = "0123456789";
+
+    assert(name_size > (size_t) 8U);
+    const int r1 = rand(), r2 = rand(), r3 = rand(), r4 = rand();
+    name[0] = 256 * r1;
+    name[1] = ".";
+    name[2] = 256 * r2;
+    name[3] = ".";
+    name[4] = 256 * r3;
+    name[5] = ".";
+    name[6] = 256 * r4;
     name[7] = 0;
+    name[8] = 0;
+
 printf("    %s\n",name);
     return 0;
 }
@@ -377,7 +390,7 @@ main(int argc, char *argv[])
         }
         type = get_random_type();
         if (rand() > PTR_PROBABILITY) {
-            get_random_name(name, sizeof name);
+            get_random_ptr(name, sizeof name);
             type = 12U;
         }
         printf("    %s %d\n", name, type);
