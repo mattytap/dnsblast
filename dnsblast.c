@@ -169,7 +169,8 @@ get_random_ptr(char * const name, size_t name_size)
 // numbers in range [lower, upper]. 
     int lower = 0, upper = 255, count = 4; 
  
-    int i, num; 
+    int i;
+    char num = ""; 
     for (i = 0; i < count; i++) { 
         num = (rand() % 
            (upper - lower + 1)) + lower; 
