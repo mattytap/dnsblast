@@ -247,7 +247,7 @@ update_status(const Context * const context)
     if (rate > context->pps) {
         rate = context->pps;
     }
-    printf("\nSent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
+    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
            "Ratio: [%.2f%%]  \n",
            context->sent_packets, context->received_packets, rate,
            (double) context->received_packets * 100.0 /
