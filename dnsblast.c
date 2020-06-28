@@ -374,6 +374,9 @@ main(int argc, char *argv[])
         }
         type = get_random_type();
         printf("\n%s %d \n", name, type);
+        if (type = 12) {
+        name = '1.1.1.1';
+        }
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
