@@ -129,7 +129,7 @@ static struct addrinfo *
 resolve(const char * const host, const char * const port)
 {
     struct addrinfo *ai, hints;
-    printf("%s", port);
+    printf("%s\n", port);
     memset(&hints, 0, sizeof hints);
     hints = (struct addrinfo) {
         .ai_family = AF_UNSPEC, .ai_flags = 0, .ai_socktype = SOCK_DGRAM,
