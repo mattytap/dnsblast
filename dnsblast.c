@@ -164,7 +164,7 @@ get_random_name(char * const name, size_t name_size)
     name[5] = '.';
     name[6] = '1';
     name[7] = 0;
-printf("%s\n",name);
+printf("    %s\n",name);
     return 0;
 }
 
