@@ -165,7 +165,7 @@ get_random_ptr(char * const name, size_t name_size)
 {
     assert(name_size > (size_t) 8U);
     const float r1 = 256 * rand(), r2 = rand(), r3 = rand(), r4 = rand();
-    char hammer[3];
+    char hammer[1000];
     sprintf(hammer, "%f", r1);
     name[0] = hammer[0];
     name[3] = '.';
