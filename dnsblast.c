@@ -375,8 +375,8 @@ main(int argc, char *argv[])
             get_random_name(name, sizeof name);
         }
         type = get_random_type();
-        printf("%ld\n",send_count);
         printf("    %s %d\n", name, type);
+        printf("%ld\n\n",send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
