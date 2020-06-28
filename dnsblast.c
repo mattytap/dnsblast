@@ -164,8 +164,8 @@ static int
 get_random_ptr(char * const name, size_t name_size)
 {
     assert(name_size > (size_t) 8U);
-    const int r1 = rand(), r2 = rand(), r3 = rand(), r4 = rand();
-    cvrt(float 256 * r1 , 3 ,name);
+    const int r1 = 256 * rand(), r2 = rand(), r3 = rand(), r4 = rand();
+    cvrt(r1 , 3 ,name);
     name[3] = '.';
     name[4] = 256 * r2;
     name[6] = '.';
