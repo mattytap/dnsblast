@@ -368,7 +368,7 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(0U);
     assert(send_count > 0UL);
-    printf("%ld\n",pps);
+    printf("\n%ld\n",pps);
     do {
         if (rand() > REPEATED_NAME_PROBABILITY) {
             get_random_name(name, sizeof name);
