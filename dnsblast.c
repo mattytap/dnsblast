@@ -164,7 +164,7 @@ get_random_name(char * const name, size_t name_size)
     name[5] = '.';
     name[6] = '1';
     name[7] = 0;
-printf("%s \n",name);
+printf("%s\n",name);
     return 0;
 }
 
@@ -185,7 +185,7 @@ get_random_type(void)
     } while (++i < weighted_types_len);
 
     uint16_t var1 = weighted_types[rand() % weighted_types_len].type;
-    printf("%d \n", var1);
+    printf("%d\n", var1);
     return var1;
 }
 
@@ -369,7 +369,7 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(0U);
     assert(send_count > 0UL);
-    printf("\n%ld\n",pps);
+    printf("%ld\n",pps);
     do {
         if (rand() > REPEATED_NAME_PROBABILITY) {
             get_random_name(name, sizeof name);
