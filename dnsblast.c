@@ -164,8 +164,8 @@ static int
 get_random_ptr(char * const name, size_t name_size)
 {
     assert(name_size > (size_t) 8U);
-    float paddy = RAND_MAX;
-    const float r1 = rand() , r2 = rand() , r3 = rand() / paddy, r4 = rand() / paddy;
+    float paddy = 256 / RAND_MAX;
+    const float r1 = paddy * rand() , r2 = paddy * rand() , r3 = rand() / paddy, r4 = rand() / paddy;
     printf("%d %f %f %f %f\n",RAND_MAX,r1,r2,r3,r4);
     char hammer[1000];
     sprintf(hammer, "%f", r1);
