@@ -38,7 +38,7 @@
 #endif
 
 #define REPEATED_NAME_PROBABILITY (int) ((RAND_MAX * 13854LL) / 100000LL)
-#define PTR_PROBABILITY (int) ((RAND_MAX * 2054LL) / 100000LL)
+#define PTR_PROBABILITY (int) ((RAND_MAX * 10054LL) / 100000LL)
 #define REFUZZ_PROBABILITY (int) ((RAND_MAX * 500LL) / 100000LL)
 
 typedef struct Context_ {
