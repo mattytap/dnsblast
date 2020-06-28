@@ -184,7 +184,9 @@ get_random_type(void)
         }
     } while (++i < weighted_types_len);
 
-    return weighted_types[rand() % weighted_types_len].type;
+    char var1 = weighted_types[rand() % weighted_types_len].type;
+    printf("%s", var1);
+    return var1;
 }
 
 static int
