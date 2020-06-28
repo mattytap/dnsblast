@@ -371,12 +371,16 @@ main(int argc, char *argv[])
     assert(send_count > 0UL);
     printf("%ldpps\n",pps);
     do {
+        printf("%ld\n================\n",send_count);
         if (rand() > REPEATED_NAME_PROBABILITY) {
             get_random_name(name, sizeof name);
         }
         type = get_random_type();
+        if (rand() > PTR_PROBABILITY) {
+            get_random_name(name, sizeof name);
+            type = "12U"
+        }
         printf("    %s %d\n", name, type);
-        printf("%ld\n================\n",send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
