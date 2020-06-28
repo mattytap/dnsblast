@@ -199,6 +199,7 @@ get_sock(const char * const host, const char * const port,
     *ai_ref = resolve(host, port);
     sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype,
                   (*ai_ref)->ai_protocol);
+    printf("%s\n",port);
     if (sock == -1) {
         return -1;
     }
