@@ -172,19 +172,19 @@ get_random_ptr(char * const name, size_t name_size)
     name[2] = hammer[2];
     name[3] = '.';
     sprintf(hammer, "%f", r2);
-    name[4] = hammer[4];
-    name[5] = hammer[5];
-    name[6] = hammer[6];
+    name[4] = hammer[0];
+    name[5] = hammer[1];
+    name[6] = hammer[2];
     name[7] = '.';
     sprintf(hammer, "%f", r3);
-    name[8] = hammer[8];
-    name[9] = hammer[9];
-    name[10] = hammer[10];
+    name[8] = hammer[0];
+    name[9] = hammer[1];
+    name[10] = hammer[2];
     name[11] = '.';
     sprintf(hammer, "%f", r4);
-    name[12] = hammer[12];
-    name[13] = hammer[13];
-    name[14] = hammer[14];
+    name[12] = hammer[0];
+    name[13] = hammer[1];
+    name[14] = hammer[2];
 
 printf("    %s\n",name);
     return 0;
