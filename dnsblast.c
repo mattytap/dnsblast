@@ -168,11 +168,11 @@ get_random_ptr(char * const name, size_t name_size)
     assert(name_size > (size_t) 8U);
     const int r1 = rand(), r2 = rand(), r3 = rand(), r4 = rand();
     name[0] = 256 * r1;
-    name[1] = ".";
+    name[1] = '.';
     name[2] = 256 * r2;
-    name[3] = ".";
+    name[3] = '.';
     name[4] = 256 * r3;
-    name[5] = ".";
+    name[5] = '.';
     name[6] = 256 * r4;
     name[7] = 0;
     name[8] = 0;
@@ -342,7 +342,7 @@ throttled_receive(Context * const context)
 int
 main(int argc, char *argv[])
 {
-    char             name[100U] = ".";
+    char             name[100U] = '.';
     Context          context;
     struct addrinfo *ai;
     const char      *host;
