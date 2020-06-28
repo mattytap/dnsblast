@@ -342,7 +342,7 @@ throttled_receive(Context * const context)
 int
 main(int argc, char *argv[])
 {
-    char             name[100U] = '.';
+    char             name[100U] = ".";
     Context          context;
     struct addrinfo *ai;
     const char      *host;
