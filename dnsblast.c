@@ -163,20 +163,20 @@ printf("    %s\n",name);
 static int
 get_random_ptr(char * const name, size_t name_size)
 {
+    assert(name_size > (size_t) 14U);
 
 // Generates and prints 'count' random 
 // numbers in range [lower, upper]. 
     int lower = 0, upper = 255, count = 4; 
  
-    int i; 
+    int i, num; 
     for (i = 0; i < count; i++) { 
-        int num = (rand() % 
+        num = (rand() % 
            (upper - lower + 1)) + lower; 
         printf("%d ", num); 
     } 
 
 
-    assert(name_size > (size_t) 8U);
     float paddy = RAND_MAX;
     float r1 = rand() / paddy, r2 = 256 * rand() / paddy, r3 = 256 * rand() / paddy, r4 = 256 * rand() / paddy;
     assert(r1 = 256 * r1);
