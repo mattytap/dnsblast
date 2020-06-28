@@ -163,8 +163,6 @@ printf("    %s\n",name);
 static int
 get_random_ptr(char * const name, size_t name_size)
 {
-    const char charset_alnum[10] = "0123456789";
-
     assert(name_size > (size_t) 8U);
     const int r1 = rand(), r2 = rand(), r3 = rand(), r4 = rand();
     name[0] = 256 * r1;
