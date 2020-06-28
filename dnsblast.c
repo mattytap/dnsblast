@@ -378,7 +378,7 @@ main(int argc, char *argv[])
         type = get_random_type();
         if (rand() > PTR_PROBABILITY) {
             get_random_name(name, sizeof name);
-            type = "12UL";
+            type = "0U";
         }
         printf("    %s %d\n", name, type);
         blast(&context, name, type);
