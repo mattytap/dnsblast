@@ -375,7 +375,7 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    printf("%ddd",send_count);
+    printf("%ld",send_count);
     do {
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
