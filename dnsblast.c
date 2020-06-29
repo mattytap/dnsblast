@@ -178,14 +178,15 @@ get_random_ptr(char * const name, size_t name_size)
         printf("%s%s ", ".",cnum); 
     } 
 
+    int r1 = (rand() % (upper - lower + 1)) + lower; 
+    int r2 = (rand() % (upper - lower + 1)) + lower; 
+    int r3 = (rand() % (upper - lower + 1)) + lower; 
+    int r4 = (rand() % (upper - lower + 1)) + lower; 
+    char cnum[5];
+    sprintf(name, "%d%d%d%d" ,r1,r2,r3,r4);
+    printf("%s%s ", ".",name); 
 
-    float paddy = RAND_MAX;
-    float r1 = rand() / paddy, r2 = 256 * rand() / paddy, r3 = 256 * rand() / paddy, r4 = 256 * rand() / paddy;
-    assert(r1 = 256 * r1);
-    assert(r2 = 256 * r2);
-    assert(r3 = 256 * r3);
-    assert(r4 = 256 * r4);
-    printf("%f %f %f %f\n",r1,r2,r3,r4);
+
     char hammer[1000];
     sprintf(hammer, "%f", r1);
     name[0] = hammer[0];
