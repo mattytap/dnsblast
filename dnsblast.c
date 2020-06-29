@@ -378,7 +378,6 @@ main(int argc, char *argv[])
     }
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
-    srand(0U);
     assert(send_count > 0UL);
     printf("%ldpps\n",pps);
     do {
