@@ -287,7 +287,7 @@ empty_receive_queue(Context * const context)
 static int
 throttled_receive(Context * const context)
 {
-    printf("\n %d \n",context->id);
+    printf("-----> %d \n",context->id);
     unsigned long long       now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
@@ -384,7 +384,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("    %s:%d\r", name, type);
+        printf("    %s:%d----->\r", name, type);
         printf("%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
