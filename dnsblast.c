@@ -142,7 +142,7 @@ resolve(const char * const host, const char * const port)
         exit(EXIT_FAILURE);
     }
     else {       
-        fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
+        fprintf(stderr, "%s:%s%s\n", host, port, &ai);
     }
     return ai;
 }
