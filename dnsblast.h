@@ -66,7 +66,6 @@ const WeightedType weighted_types[] = {
     { .type = TYPE_MX,   .weight = (int) ((RAND_MAX *  5073LL) / 100000LL) },
     { .type = TYPE_TXT,  .weight = (int) ((RAND_MAX *  2604LL) / 100000LL) },
     { .type = TYPE_AAAA, .weight = (int) ((RAND_MAX * 13858LL) / 100000LL) }
-
 };
 
 #ifndef SO_RCVBUFFORCE
