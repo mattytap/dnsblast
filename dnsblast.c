@@ -165,7 +165,7 @@ get_random_ptr(char * const name, size_t name_size)
 {
     assert(name_size > (size_t) 15U);
     int lower = 0, upper = 255; 
-    int octet1 = (rand() % (upper - lower + 1)) + lower; 
+    int octet1 = (rand() % 256 + 0; 
     int octet2 = (rand() % (upper - lower + 1)) + lower; 
     int octet3 = (rand() % (upper - lower + 1)) + lower; 
     int octet4 = (rand() % (upper - lower + 1)) + lower; 
