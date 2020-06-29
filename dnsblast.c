@@ -183,7 +183,7 @@ get_random_ptr(char * const name, size_t name_size)
     int r3 = (rand() % (upper - lower + 1)) + lower; 
     int r4 = (rand() % (upper - lower + 1)) + lower; 
     char cnum[5];
-    sprintf(name, "%f%f%f%f" ,r1,r2,r3,r4);
+    sprintf(name, "%d%f%f%f" ,r1,r2,r3,r4);
     printf("%s%s ", ".",name); 
 
 printf("    %s\n",name);
