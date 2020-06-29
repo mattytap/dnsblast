@@ -76,10 +76,4 @@ const WeightedType weighted_types[] = {
 # define SO_SNDBUFFORCE SO_SNDBUF
 #endif
 
-// This program will create different sequence of  
-// random numbers on every program run  
-  
-// Use current time as seed for random generator 
-srand(time(0)); 
-
 #endif

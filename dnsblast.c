@@ -345,6 +345,12 @@ main(int argc, char *argv[])
     uint16_t         type;
     _Bool            fuzz = 0;
 
+    // This program will create different sequence of  
+    // random numbers on every program run  
+  
+    // Use current time as seed for random generator 
+    srand(time(0)); 
+
     if (argc < 2 || argc > 6) {
         usage();
     }
