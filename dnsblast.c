@@ -349,7 +349,7 @@ main(int argc, char *argv[])
     // random numbers on every program run  
   
     // Use current time as seed for random generator 
-    srand(time(80000)); 
+    srand(time(0)); 
 
     if (argc < 2 || argc > 6) {
         usage();
