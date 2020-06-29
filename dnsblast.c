@@ -294,7 +294,9 @@ throttled_receive(Context * const context)
         context->pps * elapsed / 1000000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
         empty_receive_queue(context);
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -310,7 +312,9 @@ throttled_receive(Context * const context)
     do {
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
         if (ret == 0) {
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
             periodically_update_status(context);
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
             return 0;
         }
         if (ret == -1) {
@@ -320,8 +324,10 @@ throttled_receive(Context * const context)
             }
             continue;
         }
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
         assert(ret == 1);
         empty_receive_queue(context);
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
