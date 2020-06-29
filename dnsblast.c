@@ -163,13 +163,13 @@ printf("    %s\n",name);
 static int
 get_random_ptr(char * const name, size_t name_size)
 {
-    assert(name_size > (size_t) 14U);
-    int lower = 0, upper = 255; 
-    int r1 = (rand() % (upper - lower + 1)) + lower; 
-    int r2 = (rand() % (upper - lower + 1)) + lower; 
-    int r3 = (rand() % (upper - lower + 1)) + lower; 
-    int r4 = (rand() % (upper - lower + 1)) + lower; 
-    sprintf(name, "%d%d%d%d" ,r1,r2,r3,r4);
+    srand(time(0)); 
+    assert(name_size > (size_t) 15U);
+    int octet1 = (rand() % 256); 
+    int octet2 = (rand() % 256); 
+    int octet3 = (rand() % 256);  
+    int octet4 = (rand() % 256);  
+    sprintf(name, "%d%d%d%d" ,octet1,octet2,octet3,octet4);
     printf("%s%s ", ".",name); 
     printf("    %s\n",name);
     return 0;
