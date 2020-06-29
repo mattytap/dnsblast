@@ -230,7 +230,7 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-     printf("\n<----- %d %d \n",context->id,context->sock);
+     printf("\n<----- %d %d \n",context->id,context->ai->ai_socktype);
        if (errno == EAGAIN) {
             return 1;
         }
