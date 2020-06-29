@@ -175,7 +175,7 @@ get_random_ptr(char * const name, size_t name_size)
            (upper - lower + 1)) + lower; 
         char cnum[5];
         sprintf(cnum, "%d" ,num);
-        printf("%s%s%s ", nname,".",cnum); 
+        printf("%s%s ", ".",cnum); 
     } 
 
 
