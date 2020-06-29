@@ -128,7 +128,7 @@ static struct addrinfo *
 resolve(const char * const host, const char * const port)
 {
     struct addrinfo *ai, hints;
-    printf("%s\n", port);
+    //printf("%s\n", port);
     memset(&hints, 0, sizeof hints);
     hints = (struct addrinfo) {
         .ai_family = AF_UNSPEC, .ai_flags = 0, .ai_socktype = SOCK_DGRAM,
@@ -155,7 +155,7 @@ get_random_name(char * const name, size_t name_size)
     name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
     name[4] = '.';    name[5] = 'c';    name[6] = 'o';    name[7] = 'm';
     name[8] = 0;
-printf("    %s\n",name);
+//printf("    %s\n",name);
     return 0;
 }
 
@@ -168,8 +168,8 @@ get_random_ptr(char * const name, size_t name_size)
     int octet3 = (rand() % 256) + 0;
     int octet4 = (rand() % 256) + 0;
     sprintf(name, "%d%s%d%s%d%s%d" ,octet1,".",octet2,".",octet3,".",octet4);
-    printf("%s ", name); 
-    printf("    %s\n",name);
+    //printf("%s ", name); 
+    //printf("    %s\n",name);
     return 0;
 }
 
@@ -190,7 +190,7 @@ get_random_type(void)
     } while (++i < weighted_types_len);
 
     uint16_t var1 = weighted_types[rand() % weighted_types_len].type;
-    printf("%d\n", var1);
+    //printf("%d\n", var1);
     return var1;
 }
 
@@ -204,7 +204,7 @@ get_sock(const char * const host, const char * const port,
     *ai_ref = resolve(host, port);
     sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype,
                   (*ai_ref)->ai_protocol);
-    printf("%s\n",port);
+    //printf("%s\n",port);
     if (sock == -1) {
         return -1;
     }
@@ -381,7 +381,7 @@ main(int argc, char *argv[])
     assert(send_count > 0UL);
     printf("%ldpps\n",pps);
     do {
-        printf("================\n%ld\n",send_count);
+        //printf("================\n%ld\n",send_count);
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
             type = 12U;
