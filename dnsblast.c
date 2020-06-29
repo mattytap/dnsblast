@@ -141,6 +141,9 @@ resolve(const char * const host, const char * const port)
         fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
         exit(EXIT_FAILURE);
     }
+    else {       
+        fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
+    }
     return ai;
 }
 
@@ -251,7 +254,7 @@ update_status(const Context * const context)
         rate = context->pps;
     }
     printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \r",
+           "Ratio: [%.2f%%]  \n",
            context->sent_packets, context->received_packets, rate,
            (double) context->received_packets * 100.0 /
            (double) context->sent_packets);
@@ -370,8 +373,9 @@ main(int argc, char *argv[])
     }
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
-    srand(clock()); //fixes problem with lack of randomness MF 20200629
+    srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
+    printf("ddd",send_count);
     do {
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
