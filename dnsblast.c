@@ -387,7 +387,7 @@ main(int argc, char *argv[])
         printf("%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
-        printf("%s",context);
+        printf("%s",&context);
     } while (--send_count > 0UL);
     update_status(&context);
 
