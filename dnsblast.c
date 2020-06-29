@@ -230,12 +230,15 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-        if (errno == EAGAIN) {
+     printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+       if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
     context->received_packets++;
+    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
 
     return 0;
 }
