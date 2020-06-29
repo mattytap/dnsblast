@@ -1,3 +1,4 @@
+
 #include "dnsblast.h"
 
 static unsigned long long
@@ -70,6 +71,7 @@ encode_name(unsigned char ** const encoded_ptr, size_t encoded_size,
     }
     *encoded++ = 0;
     *encoded_ptr = encoded;
+
     return 0;
 }
 
@@ -128,6 +130,7 @@ static struct addrinfo *
 resolve(const char * const host, const char * const port)
 {
     struct addrinfo *ai, hints;
+
     memset(&hints, 0, sizeof hints);
     hints = (struct addrinfo) {
         .ai_family = AF_UNSPEC, .ai_flags = 0, .ai_socktype = SOCK_DGRAM,
@@ -154,6 +157,7 @@ get_random_name(char * const name, size_t name_size)
     name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
     name[4] = '.';    name[5] = 'c';    name[6] = 'o';    name[7] = 'm';
     name[8] = 0;
+
     return 0;
 }
 
@@ -166,6 +170,7 @@ get_random_ptr(char * const name, size_t name_size)
     int octet3 = (rand() % 256) + 0;
     int octet4 = (rand() % 256) + 0;
     sprintf(name, "%d%s%d%s%d%s%d" ,octet1,".",octet2,".",octet3,".",octet4);
+
     return 0;
 }
 
@@ -185,8 +190,7 @@ get_random_type(void)
         }
     } while (++i < weighted_types_len);
 
-    uint16_t var1 = weighted_types[rand() % weighted_types_len].type;
-    return var1;
+    return weighted_types[rand() % weighted_types_len].type;
 }
 
 static int
@@ -247,7 +251,7 @@ update_status(const Context * const context)
         rate = context->pps;
     }
     printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \n",
+           "Ratio: [%.2f%%]  \r",
            context->sent_packets, context->received_packets, rate,
            (double) context->received_packets * 100.0 /
            (double) context->sent_packets);
@@ -339,12 +343,6 @@ main(int argc, char *argv[])
     uint16_t         type;
     _Bool            fuzz = 0;
 
-    // This program will create different sequence of  
-    // random numbers on every program run  
-  
-    // Use current time as seed for random generator 
-    srand(clock()); 
-
     if (argc < 2 || argc > 6) {
         usage();
     }
@@ -372,6 +370,7 @@ main(int argc, char *argv[])
     }
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
+    srand(clock()); //fixes problem with lack of randomness MF 20200629
     assert(send_count > 0UL);
     do {
         if (rand() > PTR_PROBABILITY) {
