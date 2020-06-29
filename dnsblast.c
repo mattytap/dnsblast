@@ -294,7 +294,7 @@ throttled_receive(Context * const context)
         context->pps * elapsed / 1000000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("<----- %d %s \n",context->id,context->received_packets);
+    printf("<----- %d %ld \n",context->id,context->received_packets);
         empty_receive_queue(context);
     printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
     }
