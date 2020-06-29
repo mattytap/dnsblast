@@ -383,7 +383,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("%ld %s:%d\n", send_count, name, type);
+        printf("%ldd %s:%d\n", send_count, name, type);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
