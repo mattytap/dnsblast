@@ -164,20 +164,7 @@ static int
 get_random_ptr(char * const name, size_t name_size)
 {
     assert(name_size > (size_t) 14U);
-
-// Generates and prints 'count' random 
-// numbers in range [lower, upper]. 
-    int lower = 0, upper = 255, count = 4; 
- 
-    int i; 
-    for (i = 0; i < count; i++) { 
-        int num = (rand() % 
-           (upper - lower + 1)) + lower; 
-        char cnum[5];
-        sprintf(cnum, "%d" ,num);
-        printf("%s%s ", ".",cnum); 
-    } 
-
+    int lower = 0, upper = 255; 
     int r1 = (rand() % (upper - lower + 1)) + lower; 
     int r2 = (rand() % (upper - lower + 1)) + lower; 
     int r3 = (rand() % (upper - lower + 1)) + lower; 
@@ -185,8 +172,7 @@ get_random_ptr(char * const name, size_t name_size)
     char cnum[5];
     sprintf(name, "%d%d%d%d" ,r1,r2,r3,r4);
     printf("%s%s ", ".",name); 
-
-printf("    %s\n",name);
+    printf("    %s\n",name);
     return 0;
 }
 
