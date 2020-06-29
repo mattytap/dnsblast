@@ -183,30 +183,8 @@ get_random_ptr(char * const name, size_t name_size)
     int r3 = (rand() % (upper - lower + 1)) + lower; 
     int r4 = (rand() % (upper - lower + 1)) + lower; 
     char cnum[5];
-    sprintf(name, "%d%d%d%d" ,r1,r2,r3,r4);
+    sprintf(name, "%f%f%f%f" ,r1,r2,r3,r4);
     printf("%s%s ", ".",name); 
-
-
-    char hammer[1000];
-    sprintf(hammer, "%f", r1);
-    name[0] = hammer[0];
-    name[1] = hammer[1];
-    name[2] = hammer[2];
-    name[3] = '.';
-    sprintf(hammer, "%f", r2);
-    name[4] = hammer[0];
-    name[5] = hammer[1];
-    name[6] = hammer[2];
-    name[7] = '.';
-    sprintf(hammer, "%f", r3);
-    name[8] = hammer[0];
-    name[9] = hammer[1];
-    name[10] = hammer[2];
-    name[11] = '.';
-    sprintf(hammer, "%f", r4);
-    name[12] = hammer[0];
-    name[13] = hammer[1];
-    name[14] = hammer[2];
 
 printf("    %s\n",name);
     return 0;
