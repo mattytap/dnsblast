@@ -142,7 +142,7 @@ resolve(const char * const host, const char * const port)
         exit(EXIT_FAILURE);
     }
     else {       
-        fprintf(stderr, "%s:%s%s\n", host, port, &ai);
+        fprintf(stderr, "%s:%s%addrinfo\n", host, port, &ai);
     }
     return ai;
 }
