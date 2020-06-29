@@ -137,7 +137,7 @@ resolve(const char * const host, const char * const port)
         .ai_protocol = IPPROTO_UDP
     };
     const int gai_err = getaddrinfo(host, port, &hints, &ai);
-    printf("\n%s %s %d \n",host,port,ai->ai_addrlen);
+    printf("\n%s %s %s \n",host,port,ai->ai_addr->sa_data);
 
     if (gai_err != 0) {
         fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
@@ -222,7 +222,7 @@ get_sock(const char * const host, const char * const port,
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]) { 0 }, sizeof (int));
 #endif
     assert(ioctl(sock, FIONBIO, &flag) == 0);
-
+printf("%d\n",sock);
     return sock;
 }
 
