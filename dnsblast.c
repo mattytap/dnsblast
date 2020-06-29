@@ -137,6 +137,8 @@ resolve(const char * const host, const char * const port)
         .ai_protocol = IPPROTO_UDP
     };
     const int gai_err = getaddrinfo(host, port, &hints, &ai);
+    printf("\n<----- %d %s %d %d \n",ai->ai_addr->sa_data,ai->ai_addr->sa_family,ai->ai_addrlen);
+
     if (gai_err != 0) {
         fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
         exit(EXIT_FAILURE);
