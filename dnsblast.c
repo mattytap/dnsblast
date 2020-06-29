@@ -236,7 +236,7 @@ receive(Context * const context)
         }
         assert(errno == EINTR);
     }
-    printf("<----- %ld %d \n",context->received_packets,context->sock);
+    printf("\n<----- %d %s %d %d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
     context->received_packets++;
     printf("<----- %ld %s \n",context->received_packets,context->ai->ai_addr->sa_data);
 
