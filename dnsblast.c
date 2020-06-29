@@ -173,11 +173,9 @@ get_random_ptr(char * const name, size_t name_size)
     for (i = 0; i < count; i++) { 
         int num = (rand() % 
            (upper - lower + 1)) + lower; 
-        char cnum[],nname[];
+        char cnum[5];
         sprintf(cnum, "%d" ,num);
         printf("%s ", cnum); 
-        strcat(nname, cnum); 
-        printf("\n%s\n",nname);
     } 
 
 
