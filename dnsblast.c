@@ -293,16 +293,16 @@ empty_receive_queue(Context * const context)
 static int
 throttled_receive(Context * const context)
 {
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("296 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
     unsigned long long       now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
         context->pps * elapsed / 1000000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("<----- %d %ld \n",context->id,context->received_packets);
+    printf("303 <----- %d %ld \n",context->id,context->received_packets);
         empty_receive_queue(context);
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("305 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -318,9 +318,9 @@ throttled_receive(Context * const context)
     do {
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
         if (ret == 0) {
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("321 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
             periodically_update_status(context);
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("323 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
             return 0;
         }
         if (ret == -1) {
@@ -330,16 +330,16 @@ throttled_receive(Context * const context)
             }
             continue;
         }
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("333 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
         assert(ret == 1);
         empty_receive_queue(context);
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("336 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
 
-    printf("<----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("342 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
 
     return 0;
 }
