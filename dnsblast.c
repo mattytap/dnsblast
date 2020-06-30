@@ -393,7 +393,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("395                TYPE:%d NAME:%s----->\r", type,name);
+        printf("395                TYPE:%d NAME:%s SENT_PACKETS:%ld----->\r", type,name,send_count);
         printf("396 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
