@@ -223,7 +223,7 @@ get_sock(const char * const host, const char * const port,
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]) { 0 }, sizeof (int));
 #endif
     assert(ioctl(sock, FIONBIO, &flag) == 0);
-printf("226 %d\n",sock);
+printf("226 SOCK:%d\n",sock);
     return sock;
 }
 
