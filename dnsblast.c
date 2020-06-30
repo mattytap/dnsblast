@@ -233,13 +233,13 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-     printf("\n236 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+     printf("236 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
        if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("\n242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
     context->received_packets++;
     printf("<-----RECEIVED_PACKETS:%ld SA_DATA:%s\n",context->received_packets,context->ai->ai_addr->sa_data);
 
