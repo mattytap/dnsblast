@@ -330,16 +330,16 @@ throttled_receive(Context * const context)
             }
             continue;
         }
-    printf("333 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("333 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
         assert(ret == 1);
         empty_receive_queue(context);
-    printf("336 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("336 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
 
-    printf("342 <----- %d %s \n",context->id,context->ai->ai_addr->sa_data);
+    printf("342 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
 
     return 0;
 }
