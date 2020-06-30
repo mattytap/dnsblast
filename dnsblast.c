@@ -318,7 +318,7 @@ throttled_receive(Context * const context)
     do {
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
         if (ret == 0) {
-    printf("321<-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
+    printf("====================================321<-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
             periodically_update_status(context);
     printf("323 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
             return 0;
@@ -330,7 +330,7 @@ throttled_receive(Context * const context)
             }
             continue;
         }
-    printf("=============================333 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
+    //printf("=============================333 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
         assert(ret == 1);
         empty_receive_queue(context);
     //printf("=========================336 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
