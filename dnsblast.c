@@ -284,8 +284,8 @@ static int
 empty_receive_queue(Context * const context)
 {
     while (receive(context) == 0)
-    printf("ID:%d", context->id);
         ;
+    printf("ID:%d", context->id);
     periodically_update_status(context);
 
     return 0;
