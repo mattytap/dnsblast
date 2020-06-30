@@ -100,7 +100,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     unsigned char *msg = question_data;
     assert(sizeof_question_data > (size_t) 2U);
     encode_name(&msg, sizeof_question_data - (size_t) 2U, name);
-    printf("\nMSG:%s TYPE:%d NAME:%s\n",msg,type,name);
+    printf("\n103 MSG:%s TYPE:%d NAME:%s\n",msg,type,name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
@@ -398,8 +398,8 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("    %d:%s----->\r", type,name);
-        printf("%ld:\n", send_count);
+        printf("401                     TYPE:%d NAME:%s----->\r", type,name);
+        printf("402 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
