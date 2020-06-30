@@ -100,7 +100,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     unsigned char *msg = question_data;
     assert(sizeof_question_data > (size_t) 2U);
     encode_name(&msg, sizeof_question_data - (size_t) 2U, name);
-    printf("\nMSG:TYPE:NAME %s:%d:%s\n",msg,type,name);
+    printf("\nMSG:%s TYPE:%d NAME:%s\n",msg,type,name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
