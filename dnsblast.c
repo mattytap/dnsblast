@@ -100,7 +100,6 @@ blast(Context * const context, const char * const name, const uint16_t type)
     unsigned char *msg = question_data;
     assert(sizeof_question_data > (size_t) 2U);
     encode_name(&msg, sizeof_question_data - (size_t) 2U, name);
-    printf("103           MSG:%s TYPE:%d NAME:%s----->\n",msg,type,name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
@@ -115,6 +114,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
             perror("sendto");
             exit(EXIT_FAILURE);
         }
+    printf("117           MSG:%s TYPE:%d NAME:%s----->\n",msg,type,name);
     }
     context->sent_packets++;
 
