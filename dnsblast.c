@@ -285,7 +285,7 @@ empty_receive_queue(Context * const context)
 {
     while (receive(context) == 0)
         ;
-    printf("288 <-----ID:%d CONTEXT:%ld", context->id,context->received_packets);
+    printf("288 <-----ID:%d RECEIVED_PACKETS:%ld SENT_PACKETS:%ld", context->id,context->received_packets,context->sent_packets);
     periodically_update_status(context);
 
     return 0;
