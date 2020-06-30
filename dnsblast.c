@@ -241,7 +241,7 @@ receive(Context * const context)
     }
     printf("242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
     context->received_packets++;
-    printf("244 <-----RECEIVED_PACKETS:%ld SA_DATA:%s\n",context->received_packets,context->ai->ai_addr->sa_data);
+    printf("244 <-----RECEIVED_PACKET:%ld SA_DATA:%s\n",context->received_packets,context->ai->ai_addr->sa_data);
 
     return 0;
 }
