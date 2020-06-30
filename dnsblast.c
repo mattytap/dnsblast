@@ -114,9 +114,10 @@ blast(Context * const context, const char * const name, const uint16_t type)
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-    printf("117           ID:%d MSG:%s TYPE:%d NAME:%s----->\n",context->id,msg,type,name);
+    printf("117        ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%d----->\n",context->id,msg,type,name,context->sent_packets);
     }
     context->sent_packets++;
+    printf("120        ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%d----->\n",context->id,msg,type,name,context->sent_packets);
 
     return 0;
 }
