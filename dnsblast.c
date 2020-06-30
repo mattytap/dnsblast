@@ -138,7 +138,7 @@ resolve(const char * const host, const char * const port)
         .ai_protocol = IPPROTO_UDP
     };
     const int gai_err = getaddrinfo(host, port, &hints, &ai);
-    printf("141 HOST:%s PORT:%s SA_DATA:%s\n",host,port,ai->ai_addr->sa_data);
+    printf("141 <-----HOST:%s PORT:%s SA_DATA:%s\n",host,port,ai->ai_addr->sa_data);
 
     if (gai_err != 0) {
         fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
@@ -223,7 +223,7 @@ get_sock(const char * const host, const char * const port,
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]) { 0 }, sizeof (int));
 #endif
     assert(ioctl(sock, FIONBIO, &flag) == 0);
-printf("226 SOCK:%d\n",sock);
+printf("226 <-----SOCK:%d\n",sock);
     return sock;
 }
 
@@ -233,15 +233,15 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-    printf("=========================================236 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("236 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
        if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("=========================================242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
     context->received_packets++;
-    printf("=========================================244 <-----ID:%d RECEIVED_PACKET:%ld SA_DATA:%s\n",context->id,context->received_packets,context->ai->ai_addr->sa_data);
+    printf("244 <-----ID:%d RECEIVED_PACKET:%ld SA_DATA:%s\n",context->id,context->received_packets,context->ai->ai_addr->sa_data);
 
     return 0;
 }
@@ -285,7 +285,7 @@ empty_receive_queue(Context * const context)
 {
     while (receive(context) == 0)
         ;
-    printf("288 <-----ID:%d RECEIVED_PACKETS:%ld SENT_PACKETS:%ld", context->id,context->received_packets,context->sent_packets);
+    printf("288 <-----ID:%d RECEIVED_PACKETS:%ld SENT_PACKETS:%ld\n", context->id,context->received_packets,context->sent_packets);
     periodically_update_status(context);
 
     return 0;
@@ -294,7 +294,6 @@ empty_receive_queue(Context * const context)
 static int
 throttled_receive(Context * const context)
 {
-    //printf("=================================296 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
     unsigned long long       now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
@@ -319,9 +318,7 @@ throttled_receive(Context * const context)
     do {
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
         if (ret == 0) {
-    //printf("====================================321<-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
             periodically_update_status(context);
-    //printf("====================================323 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
             return 0;
         }
         if (ret == -1) {
@@ -331,16 +328,12 @@ throttled_receive(Context * const context)
             }
             continue;
         }
-    //printf("=============================333 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
         assert(ret == 1);
         empty_receive_queue(context);
-    //printf("=========================336 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
-
-    //printf("=========================342 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
 
     return 0;
 }
@@ -399,8 +392,8 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("401                TYPE:%d NAME:%s----->\r", type,name);
-        printf("402 SEND_COUNT:%ld\n", send_count);
+        printf("395                TYPE:%d NAME:%s----->\r", type,name);
+        printf("396 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
