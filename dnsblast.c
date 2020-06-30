@@ -285,7 +285,7 @@ empty_receive_queue(Context * const context)
 {
     while (receive(context) == 0)
         ;
-    printf("288 <-----ID:%d CONTEXT:struct Context_", context->id,*context);
+    printf("288 <-----ID:%d CONTEXT:struct Context_", context->id,context);
     periodically_update_status(context);
 
     return 0;
