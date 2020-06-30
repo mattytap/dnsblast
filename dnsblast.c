@@ -138,7 +138,7 @@ resolve(const char * const host, const char * const port)
         .ai_protocol = IPPROTO_UDP
     };
     const int gai_err = getaddrinfo(host, port, &hints, &ai);
-    printf("\n%s %s %s \n",host,port,ai->ai_addr->sa_data);
+    printf("\n141 HOST:%s PORT:%s SA_DATA:%s\n",host,port,ai->ai_addr->sa_data);
 
     if (gai_err != 0) {
         fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
@@ -398,7 +398,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("401               TYPE:%d NAME:%s----->\r", type,name);
+        printf("401                TYPE:%d NAME:%s----->\r", type,name);
         printf("402 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
