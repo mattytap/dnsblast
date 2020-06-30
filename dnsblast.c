@@ -293,7 +293,7 @@ empty_receive_queue(Context * const context)
 static int
 throttled_receive(Context * const context)
 {
-    printf("296 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
+    //printf("=================================296 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
     unsigned long long       now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
