@@ -320,7 +320,7 @@ throttled_receive(Context * const context)
         if (ret == 0) {
     //printf("====================================321<-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
             periodically_update_status(context);
-    printf("323 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
+    //printf("====================================323 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
             return 0;
         }
         if (ret == -1) {
