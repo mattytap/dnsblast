@@ -137,6 +137,7 @@ usage(void) {
 static struct addrinfo *
 resolve(const char * const host, const char * const port)
 {
+    //called by init - called by main
     struct addrinfo *ai, hints;
 
     memset(&hints, 0, sizeof hints);
@@ -205,6 +206,7 @@ static int
 get_sock(const char * const host, const char * const port,
          struct addrinfo ** const ai_ref)
 {
+    //called by main
     int flag = 1;
     int sock;
 
@@ -238,13 +240,13 @@ receive(Context * const context)
 
     printf("        R237 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-    printf("        R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("**      R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
         if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("        R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("**      R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     context->received_packets++;
     printf("        R247 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
 
