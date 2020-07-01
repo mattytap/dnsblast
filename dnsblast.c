@@ -224,7 +224,7 @@ get_sock(const char * const host, const char * const port,
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]) { 0 }, sizeof (int));
 #endif
     assert(ioctl(sock, FIONBIO, &flag) == 0);
-printf("226 <-----SOCK:%d\n",sock);
+printf("A227 HOST:%s PORT:%s SOCK:%d\n",host,port,sock);
     return sock;
 }
 
@@ -378,6 +378,7 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
+    printf("A381 HOST:%s PORT:%s SOCK:%d %s\n",host,port,sock,sockaddr_in);
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
