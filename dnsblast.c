@@ -302,9 +302,9 @@ throttled_receive(Context * const context)
         context->pps * elapsed / 1000000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("    303 <-----ID:%d RECEIVED_PACKETS:%ld\n",context->id,context->received_packets);
+    printf("        R305 <-----ID:%d RECEIVED_PACKETS:%ld %s %s %s %s %s\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,context->startup_date,elapsed);
         empty_receive_queue(context);
-    printf("    305 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
+    printf("        R307 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
