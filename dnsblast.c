@@ -41,7 +41,7 @@ find_name_component_len(const char *name)
         }
         name_pos++;
     }
-    printf("%d",name_pos);
+    printf("%d\n",name_pos);
     return name_pos;
 }
 
