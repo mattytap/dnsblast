@@ -103,7 +103,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
-    
+
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
@@ -396,7 +396,8 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("    B395 SEND_COUNT:%ld      TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\n", send_count,type,name,context.sent_packets,context.received_packets);
+        printf("    B395                TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+        printf("    B395 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
