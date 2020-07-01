@@ -114,10 +114,10 @@ blast(Context * const context, const char * const name, const uint16_t type)
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-    printf("\n    117      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
+    printf("            D117      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
     }
     context->sent_packets++;
-    printf("\n    120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
+    printf("        C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
 
     return 0;
 }
@@ -392,7 +392,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("    B395 SEND_COUNT:%ld TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", send_count,type,name,context.sent_packets,context.received_packets);
+        printf("    B395 SEND_COUNT:%ld TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\n", send_count,type,name,context.sent_packets,context.received_packets);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
