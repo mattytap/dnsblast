@@ -286,10 +286,10 @@ periodically_update_status(Context * const context)
 static int
 empty_receive_queue(Context * const context)
 {
-    printf("      ER288 <-----     ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%s MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
+    printf("      ER288 <-----     ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
     while (receive(context) == 0)
         ;
-    printf("      ER292 <-----     ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%s MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
+    printf("      ER292 <-----     ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
     periodically_update_status(context);
 
     return 0;
