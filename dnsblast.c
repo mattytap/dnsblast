@@ -139,8 +139,6 @@ resolve(const char * const host, const char * const port)
         .ai_protocol = IPPROTO_UDP
     };
     const int gai_err = getaddrinfo(host, port, &hints, &ai);
-    printf("A142 HOST:%s PORT:%s\n",host,port); //host header
-
     if (gai_err != 0) {
         fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
         exit(EXIT_FAILURE);
@@ -224,7 +222,6 @@ get_sock(const char * const host, const char * const port,
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]) { 0 }, sizeof (int));
 #endif
     assert(ioctl(sock, FIONBIO, &flag) == 0);
-printf("A227 HOST:%s PORT:%s SOCK:%d\n",host,port,sock);
     return sock;
 }
 
@@ -378,7 +375,8 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("A381 HOST:%s PORT:%s SOCK:%d %s %d\n",host,port,sock,ai->ai_addr->sa_data,ai->ai_addrlen);
+    printf("A381 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
+            host,port,sock,ai->ai_addr->sa_data,ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
