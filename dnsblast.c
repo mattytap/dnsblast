@@ -382,14 +382,15 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("A378 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
+    printf("A385 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
             host,port,sock,ai->ai_addr->sa_data,ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    printf("A391                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
-    printf("A392     SEND_COUNT:%ld\n", send_count);
+    assert(type = 0);
+    printf("A392                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A393     SEND_COUNT:%ld\n", send_count);
     do {
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
