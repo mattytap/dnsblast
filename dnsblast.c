@@ -392,7 +392,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("    B395 SEND_COUNT:%ld TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\n", send_count,type,name,context.sent_packets,context.received_packets);
+        printf("    B395 SEND_COUNT:%ld      TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\n", send_count,type,name,context.sent_packets,context.received_packets);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
