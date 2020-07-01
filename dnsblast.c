@@ -109,7 +109,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     }
     ssize_t matt = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("    C111                ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
+    printf("    C111           ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
     while (matt
            != (ssize_t) packet_size) {
         if (errno != EAGAIN && errno != EINTR) {
@@ -121,7 +121,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     printf("        D117       ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
     }
     context->sent_packets++;
-    printf("    C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
+    printf("    C120           ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
 
     return 0;
 }
