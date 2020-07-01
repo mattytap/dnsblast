@@ -378,7 +378,7 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("A381 HOST:%s PORT:%s SOCK:%d %s\n",host,port,sock,sockaddr_in);
+    printf("A381 HOST:%s PORT:%s SOCK:%d %s\n",host,port,sock,ai->ai_addr->sa_data,ai->ai_addrlen);
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
