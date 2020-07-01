@@ -114,10 +114,10 @@ blast(Context * const context, const char * const name, const uint16_t type)
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-    printf("117      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
+    printf("    117      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
     }
     context->sent_packets++;
-    printf("120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
+    printf("    120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets);
 
     return 0;
 }
@@ -231,15 +231,15 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-    printf("236 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("    236 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
        if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("    242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
     context->received_packets++;
-    printf("244 <-----ID:%d RECEIVED_PACKET:%ld SA_DATA:%s\n",context->id,context->received_packets,context->ai->ai_addr->sa_data);
+    printf("    244 <-----ID:%d RECEIVED_PACKET:%ld SA_DATA:%s\n",context->id,context->received_packets,context->ai->ai_addr->sa_data);
 
     return 0;
 }
@@ -283,7 +283,7 @@ empty_receive_queue(Context * const context)
 {
     while (receive(context) == 0)
         ;
-    printf("288 <-----ID:%d RECEIVED_PACKETS:%ld SENT_PACKETS:%ld\n", context->id,context->received_packets,context->sent_packets);
+    printf("    288 <-----ID:%d RECEIVED_PACKETS:%ld SENT_PACKETS:%ld\n", context->id,context->received_packets,context->sent_packets);
     periodically_update_status(context);
 
     return 0;
@@ -298,9 +298,9 @@ throttled_receive(Context * const context)
         context->pps * elapsed / 1000000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("303 <-----ID:%d RECEIVED_PACKETS:%ld\n",context->id,context->received_packets);
+    printf("    303 <-----ID:%d RECEIVED_PACKETS:%ld\n",context->id,context->received_packets);
         empty_receive_queue(context);
-    printf("305 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
+    printf("    305 <-----ID:%d SA_DATA:%s\n",context->id,context->ai->ai_addr->sa_data);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -375,7 +375,7 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("A381 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
+    printf("A378 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
             host,port,sock,ai->ai_addr->sa_data,ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
@@ -392,8 +392,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("395                TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
-        printf("396 SEND_COUNT:%ld\n", send_count);
+        printf("    B395 SEND_COUNT:%ld TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", send_count,type,name,context.sent_packets,context.received_packets);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
