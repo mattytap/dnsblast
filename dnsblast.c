@@ -246,7 +246,7 @@ receive(Context * const context)
         }
         assert(errno == EINTR);
     }
-    printf("**      R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("##      R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     context->received_packets++;
     printf("        R247 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
 
