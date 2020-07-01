@@ -236,10 +236,7 @@ receive(Context * const context)
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
     printf("        R238 <-----    ID:%d SOCK:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn\n",context->id,context->sock,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf);
-    
-    
-    context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
-       if (errno == EAGAIN) {
+        if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
