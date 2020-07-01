@@ -7,6 +7,7 @@ get_nanoseconds(void)
     struct timeval tv;
     gettimeofday(&tv, NULL);
     const unsigned long long now = tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
+    printf("%lld",now);
     return now;
 }
 
