@@ -41,7 +41,7 @@ find_name_component_len(const char *name)
         }
         name_pos++;
     }
-    printf("%d\n",name_pos);
+    printf("NAME_POS:%d\n",name_pos);
     return name_pos;
 }
 
@@ -103,7 +103,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     encode_name(&msg, sizeof_question_data - (size_t) 2U, name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
-    printf("%s\n",msg);
+    printf("MSG:%s\n",msg);
     const size_t packet_size = (size_t) (msg - question);
 
     if (context->fuzz != 0) {
@@ -238,10 +238,10 @@ receive(Context * const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
     ssize_t matt = recv(context->sock, buf, sizeof buf, 0);
-    printf("%ld\n",matt);
+    printf("MATT:%ld\n",matt);
     printf("        R237 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     while (matt == (ssize_t) -1) {
-    printf("%ld\n",matt);
+    printf("MATT:%ld\n",matt);
     printf("**      R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
         if (errno == EAGAIN) {
             return 1;
