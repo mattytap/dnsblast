@@ -354,7 +354,7 @@ main(int argc, char *argv[])
     unsigned long    pps        = ULONG_MAX;
     unsigned long    send_count = ULONG_MAX;
     int              sock;
-    uint16_t         type;
+    uint16_t         type = 0;
     _Bool            fuzz = 0;
 
     if (argc < 2 || argc > 6) {
@@ -388,7 +388,6 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    assert(type > 0U);
     printf("A392                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
     printf("A393     SEND_COUNT:%ld\n", send_count);
     do {
