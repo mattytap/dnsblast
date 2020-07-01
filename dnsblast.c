@@ -6,9 +6,8 @@ get_nanoseconds(void)
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    const unsigned long long now = tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
-    printf("NANOSECS:%lld\n",now);
-    return now;
+
+    return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
 }
 
 static int
@@ -42,6 +41,7 @@ find_name_component_len(const char *name)
         }
         name_pos++;
     }
+    printf("%s",name_pos);
     return name_pos;
 }
 
