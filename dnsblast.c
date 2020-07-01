@@ -234,17 +234,17 @@ receive(Context * const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
-    printf("        R237 <-----    ID:%d SOCK:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn\n",context->id,context->sock,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf);
+    printf("        R237 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-    printf("        R239 <-----    ID:%d SOCK:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn\n",context->id,context->sock,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf);
+    printf("        R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
         if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("        R245 <-----    ID:%d SOCK:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn\n",context->id,context->sock,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf);
+    printf("        R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     context->received_packets++;
-    printf("        R247 <-----    ID:%d SOCK:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn\n",context->id,context->sock,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf);
+    printf("        R247 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
 
     return 0;
 }
