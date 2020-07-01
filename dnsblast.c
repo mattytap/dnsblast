@@ -91,6 +91,7 @@ static int
 blast(Context * const context, const char * const name, const uint16_t type)
 {
     unsigned char * const question = context->question;
+    printf("%s",context->question);
     DNS_Header    * const question_header = (DNS_Header *) question;
     unsigned char * const question_data = question + sizeof *question_header;
     const size_t          sizeof_question_data =
@@ -114,7 +115,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-    printf("            D117      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
+    printf("            D117  ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
     }
     context->sent_packets++;
     printf("        C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets);
