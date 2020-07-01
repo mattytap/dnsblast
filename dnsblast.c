@@ -234,17 +234,17 @@ receive(Context * const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
-    printf("        R237 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("        R237 <-----               ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-    printf("        R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("        R239 <-----               ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
         if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("        R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("        R245 <-----               ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
     context->received_packets++;
-    printf("        R247 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("        R247 <-----               ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
 
     return 0;
 }
@@ -287,10 +287,10 @@ periodically_update_status(Context * const context)
 static int
 empty_receive_queue(Context * const context)
 {
-    printf("      ER288 <-----     ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
+    printf("      ER288 <-----                ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
     while (receive(context) == 0)
         ;
-    printf("      ER292 <-----     ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
+    printf("      ER292 <-----                ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
     periodically_update_status(context);
 
     return 0;
@@ -305,9 +305,9 @@ throttled_receive(Context * const context)
         context->pps * elapsed / 1000000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("    TR306 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+    printf("    TR306 <-----                  ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
         empty_receive_queue(context);
-    printf("    TR308 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+    printf("    TR308 <-----                  ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -334,9 +334,9 @@ throttled_receive(Context * const context)
             continue;
         }
         assert(ret == 1);
-        printf("    TR335 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+        printf("    TR335 <-----                  ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
         empty_receive_queue(context);
-        printf("    TR337 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+        printf("    TR337 <-----                  ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
