@@ -403,13 +403,13 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("B404                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
-        printf("B405     SEND_COUNT:%ld\n", send_count);
+        printf("B406                         TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+        printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
-    printf("A409                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
-    printf("A410     SEND_COUNT:%ld\n", send_count);
+    printf("A409                           TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A410   SEND_COUNT:%ld\n", send_count);
     update_status(&context);
 
     context.sending = 0;
