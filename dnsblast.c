@@ -103,6 +103,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     encode_name(&msg, sizeof_question_data - (size_t) 2U, name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
+    printf("%s",msg);
     const size_t packet_size = (size_t) (msg - question);
 
     if (context->fuzz != 0) {
