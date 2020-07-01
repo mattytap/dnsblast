@@ -235,15 +235,15 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
-    printf("    238 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("        R238 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
        if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("    242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
+    printf("        R242 <-----ID:%d SI_DATA:%s SI_FAMILY:%d AI_ADDRLEN:%d \n",context->id,context->ai->ai_addr->sa_data,context->ai->ai_addr->sa_family,context->ai->ai_addrlen);
     context->received_packets++;
-    printf("    244 <-----ID:%d RECEIVED_PACKET:%ld SA_DATA:%s\n",context->id,context->received_packets,context->ai->ai_addr->sa_data);
+    printf("        R244 <-----ID:%d RECEIVED_PACKET:%ld SA_DATA:%s\n",context->id,context->received_packets,context->ai->ai_addr->sa_data);
 
     return 0;
 }
