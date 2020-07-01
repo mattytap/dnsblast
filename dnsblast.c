@@ -103,7 +103,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
-
+    printf("        C106      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
@@ -117,7 +117,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     printf("            D117  ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
     }
     context->sent_packets++;
-    printf("        C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets);
+    printf("        C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
 
     return 0;
 }
