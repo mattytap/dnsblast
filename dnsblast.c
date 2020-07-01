@@ -103,21 +103,25 @@ blast(Context * const context, const char * const name, const uint16_t type)
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
-    printf("        C106      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
+    
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
-    while (sendto(context->sock, question, packet_size, 0,
-                  context->ai->ai_addr, context->ai->ai_addrlen)
+    ssize_t matt = sendto(context->sock, question, packet_size, 0,
+                  context->ai->ai_addr, context->ai->ai_addrlen);
+    printf("        C111      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
+    while (matt
            != (ssize_t) packet_size) {
         if (errno != EAGAIN && errno != EINTR) {
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-    printf("            D117  ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
+        matt = sendto(context->sock, question, packet_size, 0,
+                  context->ai->ai_addr, context->ai->ai_addrlen);
+    printf("            D117  ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
     }
     context->sent_packets++;
-    printf("        C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,packet_size);
+    printf("        C120      ID:%d MSG:%s TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld----->\n",context->id,msg,type,name,context->sent_packets,context->received_packets,matt,packet_size);
 
     return 0;
 }
