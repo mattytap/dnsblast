@@ -332,9 +332,9 @@ throttled_receive(Context * const context)
             continue;
         }
         assert(ret == 1);
-        printf("    TR306 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+        printf("    TR335 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
         empty_receive_queue(context);
-        printf("    TR308 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+        printf("    TR337 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
@@ -388,6 +388,8 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
+    printf("A391                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A392     SEND_COUNT:%ld\n", send_count);
     do {
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
@@ -399,11 +401,13 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("B399                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
-        printf("B400     SEND_COUNT:%ld\n", send_count);
+        printf("B404                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+        printf("B405     SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
+    printf("A409                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A410     SEND_COUNT:%ld\n", send_count);
     update_status(&context);
 
     context.sending = 0;
@@ -412,7 +416,11 @@ main(int argc, char *argv[])
     }
     freeaddrinfo(ai);
     assert(close(sock) == 0);
+    printf("A419                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A420     SEND_COUNT:%ld\n", send_count);
     update_status(&context);
+    printf("A422                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A423     SEND_COUNT:%ld\n", send_count);
     putchar('\n');
 
     return 0;
