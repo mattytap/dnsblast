@@ -390,8 +390,8 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    printf("A392                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
-    printf("A393     SEND_COUNT:%ld\n", send_count);
+    printf("A392                        TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A393 SEND_COUNT:%ld\n", send_count);
     do {
         if (rand() > PTR_PROBABILITY) {
             get_random_ptr(name, sizeof name);
@@ -403,7 +403,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("B406                         TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+        printf("B406                        TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
         printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
