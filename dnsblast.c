@@ -118,7 +118,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
         }
         sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("  C112              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
+    printf("  C121              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
     }
     context->sent_packets++;
     printf("  C124              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
@@ -238,19 +238,19 @@ receive(Context * const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
     ssize_t recvv = recv(context->sock, buf, sizeof buf, 0);
-    printf("1         R239 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
+    printf("1         R241 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
     while (recvv == (ssize_t) -1) {
-        printf(" 2          R241 <--ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
+        printf(" 2          R243 <--ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
         if (errno == EAGAIN) {
-            printf("3         R243 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
+            printf("3         R245 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
             return 1;
         }
         assert(errno == EINTR);
         recvv = recv(context->sock, buf, sizeof buf, 0);
-        printf(" ********** R248 <--ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
+        printf(" ********** R250 <--ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
     }
     context->received_packets++;
-    printf("4         R251 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
+    printf("4         R253 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
 
     return 0;
 }
@@ -292,10 +292,10 @@ periodically_update_status(Context * const context)
 static int
 empty_receive_queue(Context * const context)
 {
-    printf("        ER288 <-----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
+    printf("        ER295 <-----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
     while (receive(context) == 0)
         ;
-    printf("        ER292 <-----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
+    printf("        ER298 <-----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%s\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_canonname);
     periodically_update_status(context);
 
     return 0;
@@ -311,9 +311,9 @@ throttled_receive(Context * const context)
     const float elapseds = elapsed / 1000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("    TR306 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+    printf("    TR314 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
-    printf("    TR308 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+    printf("    TR316 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -326,7 +326,7 @@ throttled_receive(Context * const context)
     } else if (remaining_time < 0) {
         remaining_time = 0;
     }
-    printf("    TR327 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+    printf("    TR329 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     printf("      ---------------------------------------------------------------------------------------------------------------------------\n");
     do {
         printf("      POLL1 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
@@ -336,7 +336,7 @@ throttled_receive(Context * const context)
         printf("      POLL3 <-------REMAINING_TIME:%d EVENTS:%d RET:%d\n",remaining_time,pfd.events,ret);
         printf("      POLL4 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         printf("      ---------------------------------------------------------------------------------------------------------------------------\n");
-        printf("    TR336 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("    TR339 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         if (ret == 0) {
             periodically_update_status(context);
             return 0;
@@ -349,15 +349,15 @@ throttled_receive(Context * const context)
             continue;
         }
         assert(ret == 1);
-        printf("      ERQ35 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("      ERQ52 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
-        printf("      ERQ37 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("      ERQ54 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
     printf("      ----------end--------------------------------------------------------------------------------------------------------------\n");
-    printf("    TR356 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+    printf("    TR360 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
 
     return 0;
 }
@@ -401,14 +401,14 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("A385 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
+    printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n",
             host,port,sock,ai->ai_addr->sa_data,ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    printf("A392                                  SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
-    printf("A393 SEND_COUNT:%ld\n", send_count);
+    printf("A410                                  SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
+    printf("A411 SEND_COUNT:%ld\n", send_count);
     do {
         if (rand() < PTR_PROBABILITY) {
         if (rand() > REPEATED_NAME_PROBABILITY) {
@@ -421,17 +421,17 @@ main(int argc, char *argv[])
             type = 12U;
         }
         printf("======blast then throttled_receive===============================================================================================\n");
-        printf("B406                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
-        printf("B407 SEND_COUNT:%ld\n", send_count);
+        printf("B424                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
+        printf("B425 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
-        printf("B414                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
-        printf("B414 SEND_COUNT:%ld\n", send_count);
+        printf("B428                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
+        printf("B429 SEND_COUNT:%ld\n", send_count);
         printf("=================================================================================================================================\n");
     } while (--send_count > 0UL);
     printf("TR START=========================================================================================================================\n");
-    printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
-    printf("A410   SEND_COUNT:%ld\n", send_count);
+    printf("A433                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
+    printf("A434   SEND_COUNT:%ld\n", send_count);
     update_status(&context);
 
     context.sending = 0;
@@ -443,11 +443,11 @@ main(int argc, char *argv[])
     printf("out of loop======================================================================================================================\n");
     freeaddrinfo(ai);
     assert(close(sock) == 0);
-    printf("A419                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
-    printf("A420 SEND_COUNT:%ld\n", send_count);
+    printf("A446                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
+    printf("A447 SEND_COUNT:%ld\n", send_count);
     update_status(&context);
-    printf("A422                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
-    printf("A423 SEND_COUNT:%ld\n", send_count);
+    printf("A449                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
+    printf("A450 SEND_COUNT:%ld\n", send_count);
     putchar('\n');
 
     return 0;
