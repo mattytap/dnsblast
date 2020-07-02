@@ -302,11 +302,13 @@ empty_receive_queue(Context * const context)
 static int
 throttled_receive(Context * const context)
 {
+printf("A\n");
     unsigned long long       now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
         context->pps * elapsed / 1000000000UL;
     const float elapseds = elapsed / 1000000UL;
+printf("B\n");
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
     printf("    TR306 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
