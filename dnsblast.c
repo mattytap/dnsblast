@@ -323,11 +323,12 @@ printf("A\n");
     if (context->sending == 0) {
         remaining_time = -1;
     } else if (remaining_time < 0) {
-        remaining_time = 0;
+        remaining_time = 2000UL;
     }
 printf("B\n");
     do {
 printf("C %d %d\n",remaining_time,pfd.events);
+
         ret = poll(&pfd, (nfds_t) 1, remaining_time);  //gets stuck here
 printf("D %d %d %d\n",ret,remaining_time,pfd.events);
         if (ret == 0) {
