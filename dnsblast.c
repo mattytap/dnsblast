@@ -302,7 +302,6 @@ empty_receive_queue(Context * const context)
 static int
 throttled_receive(Context * const context)
 {
-printf("A\n");
     unsigned long long       now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
@@ -315,6 +314,7 @@ printf("B\n");
         empty_receive_queue(context);
     printf("    TR308 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     }
+printf("C\n");
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
     int                      remaining_time = (int) (time_to_wait * 1000ULL);
