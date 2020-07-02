@@ -109,7 +109,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     }
     ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("  C112                 ID:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s TYPE:%d NAME:%s ----->\n",context->id,context->sent_packets,context->received_packets,sendtov,packet_size,msg,type,name);
+    printf("  C112                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s TYPE:%d NAME:%s ----->\n",context->id,context->sent_packets,context->received_packets,sendtov,packet_size,msg,type,name);
     while (sendtov
            != (ssize_t) packet_size) {
         if (errno != EAGAIN && errno != EINTR) {
