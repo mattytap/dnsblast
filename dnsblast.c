@@ -121,7 +121,6 @@ blast(Context * const context, const char * const name, const uint16_t type)
     printf("  C121              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
     }
     context->sent_packets++;
-    printf("  C124              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
 
     return 0;
 }
