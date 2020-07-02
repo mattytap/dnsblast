@@ -303,15 +303,15 @@ static int
 throttled_receive(Context * const context)
 {
     unsigned long long       now = get_nanoseconds(), now2;
-    unsigned long long elapsed = now - context->startup_date;
+    const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
         context->pps * elapsed / 1000000000UL;
-        elapsed = elapsed / 1000000UL;
+    const float elapseds = elapsed / 1000000UL;
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
-    printf("    TR306 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+    printf("    TR306 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
-    printf("    TR308 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+    printf("    TR308 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -338,9 +338,9 @@ throttled_receive(Context * const context)
             continue;
         }
         assert(ret == 1);
-        printf("    TR335 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+        printf("    TR335 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
-        printf("    TR337 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapsed);
+        printf("    TR337 <-----       ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%lld\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
