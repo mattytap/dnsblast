@@ -303,7 +303,7 @@ static int
 throttled_receive(Context * const context)
 {
     unsigned long long       now = get_nanoseconds(), now2;
-    const unsigned long long elapsed = now - context->startup_date;
+    unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
         context->pps * elapsed / 1000000000UL;
         assert(elapsed = elapsed / 1000000UL);
