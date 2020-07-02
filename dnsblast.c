@@ -103,10 +103,11 @@ blast(Context * const context, const char * const name, const uint16_t type)
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
-
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
+    printf("  C109              FD:%d BUF:%d N:%d FLAGS:%d ADDR:%d ADDRLEN:%d\n",context->sock, question, packet_size, 0,
+                  context->ai->ai_addr, context->ai->ai_addrlen);
     ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
     printf("  C112              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
@@ -118,7 +119,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
         }
         sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("    C121            ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
+        printf("    C121            ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
     }
     context->sent_packets++;
     printf("  C124              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sending,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
