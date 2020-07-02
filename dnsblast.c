@@ -411,6 +411,8 @@ main(int argc, char *argv[])
         printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
+        printf("B414                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
+        printf("B414 SEND_COUNT:%ld\n", send_count);
     } while (--send_count > 0UL);
     printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
     printf("A410   SEND_COUNT:%ld\n", send_count);
