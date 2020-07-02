@@ -307,14 +307,13 @@ throttled_receive(Context * const context)
     const unsigned long long max_packets =
         context->pps * elapsed / 1000000000UL;
     const float elapseds = elapsed / 1000000UL;
-printf("B\n");
 
     if (context->sending == 1 && context->sent_packets <= max_packets) {
     printf("    TR306 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
     printf("    TR308 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     }
-printf("C\n");
+printf("A\n");
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
     int                      remaining_time = (int) (time_to_wait * 1000ULL);
@@ -326,12 +325,16 @@ printf("C\n");
     } else if (remaining_time < 0) {
         remaining_time = 0;
     }
+printf("B\n");
     do {
+printf("C\n");
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
+printf("D\n");
         if (ret == 0) {
             periodically_update_status(context);
             return 0;
         }
+printf("E\n");
         if (ret == -1) {
             if (errno != EAGAIN && errno != EINTR) {
                 perror("poll");
@@ -339,6 +342,7 @@ printf("C\n");
             }
             continue;
         }
+printf("G\n");
         assert(ret == 1);
         printf("    TR335 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
