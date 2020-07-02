@@ -1,4 +1,3 @@
-
 #include "dnsblast.h"
 
 static unsigned long long
