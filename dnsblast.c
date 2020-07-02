@@ -41,7 +41,6 @@ find_name_component_len(const char *name)
         }
         name_pos++;
     }
-    printf("NAME_POS:%d\n",name_pos);
     return name_pos;
 }
 
@@ -108,21 +107,21 @@ blast(Context * const context, const char * const name, const uint16_t type)
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
-    ssize_t matt = sendto(context->sock, question, packet_size, 0,
+    ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("  C112                 ID:%d TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,type,name,context->sent_packets,context->received_packets,matt,packet_size,msg);
-    while (matt
+    printf("  C112                 ID:%d TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,type,name,context->sent_packets,context->received_packets,sendtov,packet_size,msg);
+    while (sendtov
            != (ssize_t) packet_size) {
         if (errno != EAGAIN && errno != EINTR) {
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-        matt = sendto(context->sock, question, packet_size, 0,
+        sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("  C121                 ID:%d TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,type,name,context->sent_packets,context->received_packets,matt,packet_size,msg);
+    printf("  C121                 ID:%d TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,type,name,context->sent_packets,context->received_packets,sendtov,packet_size,msg);
     }
     context->sent_packets++;
-    printf("  C124                 ID:%d TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,type,name,context->sent_packets,context->received_packets,matt,packet_size,msg);
+    printf("  C124                 ID:%d TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,type,name,context->sent_packets,context->received_packets,sendtov,packet_size,msg);
 
     return 0;
 }
@@ -236,21 +235,19 @@ static int
 receive(Context * const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
-    ssize_t matt = recv(context->sock, buf, sizeof buf, 0);
-    printf("MATT:%ld\n",matt);
-    printf("        R237 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
-    while (matt == (ssize_t) -1) {
-    printf("MATT:%ld\n",matt);
-    printf("**      R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    ssize_t recvv = recv(context->sock, buf, sizeof buf, 0);
+    printf("        R237 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
+    while (recvv == (ssize_t) -1) {
+    printf("**      R239 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
         if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
-        matt = recv(context->sock, buf, sizeof buf, 0);
+        recvv = recv(context->sock, buf, sizeof buf, 0);
     }
-    printf("##      R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("##      R245 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
     context->received_packets++;
-    printf("        R247 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock);
+    printf("        R247 <-----    ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
 
     return 0;
 }
