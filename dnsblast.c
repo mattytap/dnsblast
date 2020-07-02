@@ -244,6 +244,7 @@ receive(Context * const context)
         }
         assert(errno == EINTR);
         recvv = recv(context->sock, buf, sizeof buf, 0);
+    printf("*           R239 <--ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
     }
     context->received_packets++;
     printf("v         R247 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
