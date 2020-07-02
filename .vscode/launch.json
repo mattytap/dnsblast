@@ -23,7 +23,7 @@
                 }
             ],
             "preLaunchTask": "make",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "miDebuggerPath": "~/dnsblast"
         }
     ]
 }
