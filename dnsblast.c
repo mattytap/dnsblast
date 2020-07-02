@@ -352,7 +352,8 @@ throttled_receive(Context * const context)
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
-    printf("      TR355-----end--------------------------------------------------------------------------------------------------------------\n");
+    printf("      ----------end--------------------------------------------------------------------------------------------------------------\n");
+    printf("    TR356 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
 
     return 0;
 }
