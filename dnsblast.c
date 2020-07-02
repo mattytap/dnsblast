@@ -423,6 +423,7 @@ main(int argc, char *argv[])
         throttled_receive(&context);
         printf("B414                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
         printf("B414 SEND_COUNT:%ld\n", send_count);
+        printf("=================================================================================================================================\n");
     } while (--send_count > 0UL);
     printf("TR START=========================================================================================================================\n");
     printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
