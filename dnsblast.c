@@ -407,12 +407,12 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("B406                        TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+        printf("B406                       SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ----->\r", type,name,context.sent_packets,context.received_packets);
         printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
-    printf("A409                           TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A409                           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ----->\r", type,name,context.sent_packets,context.received_packets);
     printf("A410   SEND_COUNT:%ld\n", send_count);
     update_status(&context);
 
@@ -422,10 +422,10 @@ main(int argc, char *argv[])
     }
     freeaddrinfo(ai);
     assert(close(sock) == 0);
-    printf("A419                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A419                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ----->\r", type,name,context.sent_packets,context.received_packets);
     printf("A420     SEND_COUNT:%ld\n", send_count);
     update_status(&context);
-    printf("A422                             TYPE:%d NAME:%s SENT_PACKETS:%ld RECEIVED_PACKETS:%ld----->\r", type,name,context.sent_packets,context.received_packets);
+    printf("A422                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ----->\r", type,name,context.sent_packets,context.received_packets);
     printf("A423     SEND_COUNT:%ld\n", send_count);
     putchar('\n');
 
