@@ -424,14 +424,14 @@ main(int argc, char *argv[])
         printf("B414                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
         printf("B414 SEND_COUNT:%ld\n", send_count);
     } while (--send_count > 0UL);
-    printf("=================================================================================================================================\n");
+    printf("TR START=========================================================================================================================\n");
     printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
     printf("A410   SEND_COUNT:%ld\n", send_count);
     update_status(&context);
 
     context.sending = 0;
     while (context.sent_packets != context.received_packets) {
-        printf("=================================================================================================================================\n");
+        printf("TR LOOP==========================================================================================================================\n");
         throttled_receive(&context);
         printf("TR completed=====================================================================================================================\n");
     }
