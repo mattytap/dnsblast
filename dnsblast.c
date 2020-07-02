@@ -1,3 +1,4 @@
+
 #include "dnsblast.h"
 
 static unsigned long long
@@ -227,6 +228,7 @@ get_sock(const char * const host, const char * const port,
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]) { 0 }, sizeof (int));
 #endif
     assert(ioctl(sock, FIONBIO, &flag) == 0);
+
     return sock;
 }
 
@@ -234,6 +236,7 @@ static int
 receive(Context * const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
+
     ssize_t recvv = recv(context->sock, buf, sizeof buf, 0);
     printf("1         R239 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n",context->id,context->sending,context->sent_packets,context->received_packets,context->ai->ai_addrlen,buf,context->sock,recvv);
     while (recvv == (ssize_t) -1) {
@@ -284,7 +287,6 @@ periodically_update_status(Context * const context)
     context->last_status_update = now;
 
     return 0;
-
 }
 
 static int
@@ -329,7 +331,8 @@ throttled_receive(Context * const context)
     do {
         printf("      POLL1 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         printf("      POLL2 <-------REMAINING_TIME:%d EVENTS:%d RET:%d\n",remaining_time,pfd.events,ret);
-        ret = poll(&pfd, (nfds_t) 1, remaining_time);  //gets stuck here
+        //gets stuck on next line
+        ret = poll(&pfd, (nfds_t) 1, remaining_time);
         printf("      POLL3 <-------REMAINING_TIME:%d EVENTS:%d RET:%d\n",remaining_time,pfd.events,ret);
         printf("      POLL4 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         printf("      ---------------------------------------------------------------------------------------------------------------------------\n");
@@ -407,15 +410,15 @@ main(int argc, char *argv[])
     printf("A392                                  SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
     printf("A393 SEND_COUNT:%ld\n", send_count);
     do {
-        if (rand() > PTR_PROBABILITY) {
-            get_random_ptr(name, sizeof name);
-            type = 12U;
+        if (rand() < PTR_PROBABILITY) {
+        if (rand() > REPEATED_NAME_PROBABILITY) {
+            get_random_name(name, sizeof name);
+        }
+        type = get_random_type();
         }
         else {
-            if (rand() > REPEATED_NAME_PROBABILITY) {
-                get_random_name(name, sizeof name);
-            }
-            type = get_random_type();
+            get_random_ptr(name, sizeof name);
+            type = 12U;
         }
         printf("======blast then throttled_receive===============================================================================================\n");
         printf("B406                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
