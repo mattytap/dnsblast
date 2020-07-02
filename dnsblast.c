@@ -324,6 +324,7 @@ throttled_receive(Context * const context)
     } else if (remaining_time < 0) {
         remaining_time = 0;
     }
+    printf("    TR327 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     printf("    -----------------------------------------------------------------------------------------------------------------------------\n");
     do {
         printf("      POLL1 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
@@ -344,14 +345,14 @@ throttled_receive(Context * const context)
             continue;
         }
         assert(ret == 1);
-        printf("    TR335 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("    ERQ35 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
-        printf("    TR337 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("    ERQ37 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
-    printf("    -----end---------------------------------------------------------------------------------------------------------------------\n");
+    printf("    TR355-----end----------------------------------------------------------------------------------------------------------------\n");
 
     return 0;
 }
