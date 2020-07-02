@@ -414,7 +414,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("=================================================================================================================================\n");
+        printf("======blast then throttled_receive===============================================================================================\n");
         printf("B406                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
         printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
