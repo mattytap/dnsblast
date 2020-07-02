@@ -323,19 +323,16 @@ printf("A\n");
     if (context->sending == 0) {
         remaining_time = -1;
     } else if (remaining_time < 0) {
-        remaining_time = 2000UL;
+        remaining_time = 0;
     }
-printf("B\n");
     do {
-printf("C %d %d\n",remaining_time,pfd.events);
-
+        printf("      PU335 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
         ret = poll(&pfd, (nfds_t) 1, remaining_time);  //gets stuck here
-printf("D %d %d %d\n",ret,remaining_time,pfd.events);
+        printf("      PU335 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
         if (ret == 0) {
             periodically_update_status(context);
             return 0;
         }
-printf("E\n");
         if (ret == -1) {
             if (errno != EAGAIN && errno != EINTR) {
                 perror("poll");
@@ -343,7 +340,6 @@ printf("E\n");
             }
             continue;
         }
-printf("G\n");
         assert(ret == 1);
         printf("    TR335 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         empty_receive_queue(context);
