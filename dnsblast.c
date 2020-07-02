@@ -425,7 +425,7 @@ main(int argc, char *argv[])
         printf("B414 SEND_COUNT:%ld\n", send_count);
         printf("=================================================================================================================================\n");
     } while (--send_count > 0UL);
-    printf("blast end and TR START===========================================================================================================\n");
+    printf("TR START=========================================================================================================================\n");
     printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
     printf("A410   SEND_COUNT:%ld\n", send_count);
     update_status(&context);
