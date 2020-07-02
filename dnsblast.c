@@ -330,9 +330,10 @@ throttled_receive(Context * const context)
         printf("      POLL1 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         printf("      POLL2 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
         ret = poll(&pfd, (nfds_t) 1, remaining_time);  //gets stuck here
-        printf("      POLL3 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
-        printf("      POLL4 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
+        printf("      POLL3 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
+        printf("      POLL4 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         printf("      ---------------------------------------------------------------------------------------------------------------------------\n");
+        printf("    TR336 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
         if (ret == 0) {
             periodically_update_status(context);
             return 0;
