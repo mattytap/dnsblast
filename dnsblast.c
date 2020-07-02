@@ -327,7 +327,7 @@ printf("A\n");
     }
 printf("B\n");
     do {
-printf("C %hhn %s\n",remaining_time,pfd.events);
+printf("C %d %d\n",remaining_time,pfd.events);
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
 printf("D\n");
         if (ret == 0) {
