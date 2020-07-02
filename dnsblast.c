@@ -313,7 +313,6 @@ throttled_receive(Context * const context)
         empty_receive_queue(context);
     printf("    TR308 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
     }
-printf("A\n");
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
     int                      remaining_time = (int) (time_to_wait * 1000ULL);
@@ -325,10 +324,14 @@ printf("A\n");
     } else if (remaining_time < 0) {
         remaining_time = 0;
     }
+    printf("---------------------------------------------------------------------------------------------------------------------------------\n");
     do {
-        printf("      PU335 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
+        printf("      POLL1 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("      POLL2 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
         ret = poll(&pfd, (nfds_t) 1, remaining_time);  //gets stuck here
-        printf("      PU335 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
+        printf("      POLL3 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n",context->id,context->sending,context->sent_packets,context->received_packets,max_packets,elapseds);
+        printf("      POLL4 <-------C %d %d %d\n",ret,remaining_time,pfd.events);
+        printf("---------------------------------------------------------------------------------------------------------------------------------\n");
         if (ret == 0) {
             periodically_update_status(context);
             return 0;
@@ -348,6 +351,7 @@ printf("A\n");
         remaining_time -= (now2 - now) / 1000;
         now = now2;
     } while (remaining_time > 0);
+    printf("end------------------------------------------------------------------------------------------------------------------------------\n");
 
     return 0;
 }
