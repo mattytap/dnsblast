@@ -394,7 +394,7 @@ main(int argc, char *argv[])
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    printf("A392                                  SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ------------------------------>\r", context.sent_packets,context.received_packets,type,name);
+    printf("A392                                  SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
     printf("A393 SEND_COUNT:%ld\n", send_count);
     do {
         if (rand() > PTR_PROBABILITY) {
@@ -407,12 +407,12 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("B406                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ------------------------------>\r", context.sent_packets,context.received_packets,type,name);
+        printf("B406                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
         printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
-    printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ------------------------------>\r", context.sent_packets,context.received_packets,type,name);
+    printf("A409                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r", context.sent_packets,context.received_packets,type,name);
     printf("A410   SEND_COUNT:%ld\n", send_count);
     update_status(&context);
 
@@ -422,10 +422,10 @@ main(int argc, char *argv[])
     }
     freeaddrinfo(ai);
     assert(close(sock) == 0);
-    printf("A419                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ------------------------------>\r",context.sent_packets,context.received_packets, type,name);
+    printf("A419                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
     printf("A420     SEND_COUNT:%ld\n", send_count);
     update_status(&context);
-    printf("A422                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ------------------------------>\r",context.sent_packets,context.received_packets, type,name);
+    printf("A422                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
     printf("A423     SEND_COUNT:%ld\n", send_count);
     putchar('\n');
 
