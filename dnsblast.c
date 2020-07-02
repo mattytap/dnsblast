@@ -109,7 +109,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     }
     ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("  C112                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s TYPE:%d NAME:%s ----->\n",context->id,context->sent_packets,context->received_packets,sendtov,packet_size,msg,type,name);
+    printf("  C112                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
     while (sendtov
            != (ssize_t) packet_size) {
         if (errno != EAGAIN && errno != EINTR) {
@@ -118,10 +118,10 @@ blast(Context * const context, const char * const name, const uint16_t type)
         }
         sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
-    printf("  C121                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s TYPE:%d NAME:%s ----->\n",context->id,context->sent_packets,context->received_packets,sendtov,packet_size,msg,type,name);
+    printf("  C121                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
     }
     context->sent_packets++;
-    printf("  C124                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld SENDTO:%ld PACKET_SIZE:%ld MSG:%s TYPE:%d NAME:%s ----->\n",context->id,context->sent_packets,context->received_packets,sendtov,packet_size,msg,type,name);
+    printf("  C124                 ID:%d           SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n",context->id,context->sent_packets,context->received_packets,type,name,sendtov,packet_size,msg);
 
     return 0;
 }
@@ -407,7 +407,7 @@ main(int argc, char *argv[])
             }
             type = get_random_type();
         }
-        printf("B406                                  SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ----->\r", context.sent_packets,context.received_packets,type,name);
+        printf("B406                                    SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ----->\r", context.sent_packets,context.received_packets,type,name);
         printf("B407 SEND_COUNT:%ld\n", send_count);
         blast(&context, name, type);
         throttled_receive(&context);
