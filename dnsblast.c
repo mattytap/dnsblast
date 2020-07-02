@@ -365,7 +365,7 @@ main(int argc, char *argv[])
     char             name[100U] = ".";
     Context          context;
     struct addrinfo *ai;
-    const char      *host;
+    const char      *host = "192.168.240.2";
     const char      *port = "domain";
     unsigned long    pps        = ULONG_MAX;
     unsigned long    send_count = ULONG_MAX;
