@@ -106,7 +106,7 @@ blast(Context * const context, const char * const name, const uint16_t type)
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
-    printf("  C109              FD:%d BUF:%hhn N:%ld FLAGS:%d SA_FAMILY:%D SA_DATA:%d ADDRLEN:%d\n",context->sock, question, packet_size, 0,
+    printf("  C109              FD:%d BUF:%hhn N:%ld FLAGS:%d SA_FAMILY:%d SA_DATA:%d ADDRLEN:%d\n",context->sock, question, packet_size, 0,
                   context->ai->ai_addr->sa_family,context->ai->ai_addr->sa_data, context->ai->ai_addrlen);
     ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
                   context->ai->ai_addr, context->ai->ai_addrlen);
