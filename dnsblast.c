@@ -329,7 +329,7 @@ printf("B\n");
     do {
 printf("C %d %d\n",remaining_time,pfd.events);
         ret = poll(&pfd, (nfds_t) 1, remaining_time);
-printf("D\n");
+printf("D %d\n",ret);
         if (ret == 0) {
             periodically_update_status(context);
             return 0;
