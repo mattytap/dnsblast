@@ -428,11 +428,11 @@ main(int argc, char *argv[])
     printf("=================================================================================================================================\n");
     freeaddrinfo(ai);
     assert(close(sock) == 0);
-    printf("A419                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
-    printf("A420     SEND_COUNT:%ld\n", send_count);
+    printf("A419                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
+    printf("A420 SEND_COUNT:%ld\n", send_count);
     update_status(&context);
-    printf("A422                             SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
-    printf("A423     SEND_COUNT:%ld\n", send_count);
+    printf("A422                                SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s ---------------------------------->\r",context.sent_packets,context.received_packets, type,name);
+    printf("A423 SEND_COUNT:%ld\n", send_count);
     putchar('\n');
 
     return 0;
