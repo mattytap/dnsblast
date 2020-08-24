@@ -120,13 +120,6 @@ blast(Context *const context, const char *const name, const uint16_t type)
     return 0;
 }
 
-static void
-usage(void)
-{
-    puts("\nUsage: dnsblast <host> [<count>] [<pps>] [<port>]\n");
-    exit(EXIT_SUCCESS);
-}
-
 static struct addrinfo *
 resolve(const char *const host, const char *const port)
 {
@@ -256,27 +249,6 @@ receive(Context *const context)
 }
 
 static int
-update_status(const Context *const context)
-{
-    const unsigned long long now = get_nanoseconds();
-    const unsigned long long elapsed = now - context->startup_date;
-    unsigned long long rate =
-        context->received_packets * 1000000000ULL / elapsed;
-    if (rate > context->pps)
-    {
-        rate = context->pps;
-    }
-    printf("                                          Sent: [%lu]   -  Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \r",
-           context->sent_packets, context->received_packets, rate,
-           (double)context->received_packets * 100.0 /
-               (double)context->sent_packets);
-    fflush(stdout);
-
-    return 0;
-}
-
-static int
 periodically_update_status(Context *const context)
 {
     unsigned long long now = get_nanoseconds();
@@ -285,21 +257,18 @@ periodically_update_status(Context *const context)
     {
         return 1;
     }
-    update_status(context);
+
+    const Context *const context2 = context;
+    const unsigned long long now2 = get_nanoseconds();
+    const unsigned long long elapsed = now2 - context2->startup_date;
+    unsigned long long rate = context2->received_packets * 1000000000ULL / elapsed;
+    if (rate > context2->pps)
+    {
+        rate = context2->pps;
+    }
+    printf("Sent: [%lu]   -  Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \r", context2->sent_packets, context2->received_packets, rate, (double)context2->received_packets * 100.0 / (double)context2->sent_packets);
+    fflush(stdout);
     context->last_status_update = now;
-
-    return 0;
-}
-
-static int
-empty_receive_queue(Context *const context)
-{
-
-    while (receive(context) == 0)
-        ;
-
-    periodically_update_status(context);
-
     return 0;
 }
 
@@ -315,7 +284,9 @@ throttled_receive(Context *const context)
     if (context->sending == 1 && context->sent_packets <= max_packets)
     {
 
-        empty_receive_queue(context);
+        while (receive(context) == 0)
+            ;
+        periodically_update_status(context);
     }
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
@@ -354,7 +325,9 @@ throttled_receive(Context *const context)
         }
         assert(ret == 1);
 
-        empty_receive_queue(context);
+        while (receive(context) == 0)
+            ;
+        periodically_update_status(context);
 
         now2 = get_nanoseconds();
         remaining_time -= (now2 - now) / 1000;
@@ -375,24 +348,10 @@ int main(int argc, char *argv[])
     unsigned long send_count = ULONG_MAX;
     int sock;
     uint16_t type = 0;
-
-    if (argc < 1)
-    {
-        usage();
-    }
-    host = argv[1];
-    if (argc > 2)
-    {
-        send_count = strtoul(argv[2], NULL, 10);
-    }
-    if (argc > 3)
-    {
-        pps = strtoul(argv[3], NULL, 10);
-    }
-    if (argc > 4)
-    {
-        port = argv[4];
-    }
+    host = "127.0.0.1";
+    send_count = strtoul("10", NULL, 10);
+    pps = strtoul("1", NULL, 10);
+    port = "53";
     if ((sock = get_sock(host, port, &ai)) == -1)
     {
         perror("Oops");
@@ -408,10 +367,7 @@ int main(int argc, char *argv[])
     {
         if (rand() < PTR_PROBABILITY)
         {
-            if (rand() > REPEATED_NAME_PROBABILITY)
-            {
-                get_random_name(name, sizeof name);
-            }
+            get_random_name(name, sizeof name);
             type = get_random_type();
         }
         else
@@ -425,7 +381,17 @@ int main(int argc, char *argv[])
 
     } while (--send_count > 0UL);
 
-    update_status(&context);
+    const Context *const context2 = &context;
+
+    const unsigned long long now2 = get_nanoseconds();
+    const unsigned long long elapsed = now2 - context2->startup_date;
+    unsigned long long rate = context2->received_packets * 1000000000ULL / elapsed;
+    if (rate > context2->pps)
+    {
+        rate = context2->pps;
+    }
+    printf("Sent: [%lu]   -  Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \r", context2->sent_packets, context2->received_packets, rate, (double)context2->received_packets * 100.0 / (double)context2->sent_packets);
+    fflush(stdout);
 
     context.sending = 0;
     while (context.sent_packets != context.received_packets)
@@ -437,7 +403,17 @@ int main(int argc, char *argv[])
     freeaddrinfo(ai);
     assert(close(sock) == 0);
 
-    update_status(&context);
+    const Context *const context3 = &context;
+
+    const unsigned long long now3 = get_nanoseconds();
+    const unsigned long long elapsed3 = now3 - context3->startup_date;
+    unsigned long long rate3 = context3->received_packets * 1000000000ULL / elapsed;
+    if (rate3 > context3->pps)
+    {
+        rate3 = context3->pps;
+    }
+    printf("Sent: [%lu]   -  Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \r", context3->sent_packets, context3->received_packets, rate, (double)context3->received_packets * 100.0 / (double)context3->sent_packets);
+    fflush(stdout);
 
     putchar('\n');
 
