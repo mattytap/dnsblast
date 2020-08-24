@@ -51,7 +51,6 @@ typedef struct Context_ {
     unsigned long          sent_packets;
     int                    sock;
     uint16_t               id;
-    _Bool                  fuzz;
     _Bool                  sending;
 } Context;
 
