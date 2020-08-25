@@ -8,19 +8,14 @@ get_nanoseconds(void)
     return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
 }
 static int
-init_context(Context *const context, const int sock,
-             const struct addrinfo *const ai)
+init_context(Context *const context, const int sock, const struct addrinfo *const ai)
 {
     const unsigned long long now = get_nanoseconds();
     *context = (Context){
         .received_packets = 0UL, .sent_packets = 0UL, .last_status_update = now, .startup_date = now, .sock = sock, .ai = ai, .sending = 1};
     DNS_Header *const question_header = (DNS_Header *)context->question;
     *question_header = (DNS_Header){
-        .flags = htons(FLAGS_OPCODE_QUERY | FLAGS_RECURSION_DESIRED),
-        .qdcount = htons(1U),
-        .ancount = 0U,
-        .nscount = 0U,
-        .arcount = 0U};
+        .flags = htons(FLAGS_OPCODE_QUERY | FLAGS_RECURSION_DESIRED), .qdcount = htons(1U), .ancount = 0U, .nscount = 0U, .arcount = 0U};
     return 0;
 }
 static int
@@ -38,8 +33,7 @@ find_name_component_len(const char *name)
     return name_pos;
 }
 static int
-encode_name(unsigned char **const encoded_ptr, size_t encoded_size,
-            const char *const name)
+encode_name(unsigned char **const encoded_ptr, size_t encoded_size, const char *const name)
 {
     unsigned char *encoded = *encoded_ptr;
     const char *name_current = name;
@@ -88,8 +82,7 @@ blast(Context *const context, const char *const name, const uint16_t type)
     {
         question[rand() % packet_size] = rand() % 0xff;
     } while (rand() < p && (p = p / 2) > 0);
-    ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
-                             context->ai->ai_addr, context->ai->ai_addrlen);
+    ssize_t sendtov = sendto(context->sock, question, packet_size, 0, context->ai->ai_addr, context->ai->ai_addrlen);
     while (sendtov != (ssize_t)packet_size)
     {
         if (errno != EAGAIN && errno != EINTR)
@@ -97,8 +90,7 @@ blast(Context *const context, const char *const name, const uint16_t type)
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-        sendtov = sendto(context->sock, question, packet_size, 0,
-                         context->ai->ai_addr, context->ai->ai_addrlen);
+        sendtov = sendto(context->sock, question, packet_size, 0, context->ai->ai_addr, context->ai->ai_addrlen);
     }
     context->sent_packets++;
     return 0;
@@ -166,29 +158,23 @@ get_random_type(void)
     return weighted_types[rand() % weighted_types_len].type;
 }
 static int
-get_sock(const char *const host, const char *const port,
-         struct addrinfo **const ai_ref)
+get_sock(const char *const host, const char *const port, struct addrinfo **const ai_ref)
 {
     //called by main
     int flag = 1;
     int sock;
     *ai_ref = resolve(host, port);
-    sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype,
-                  (*ai_ref)->ai_protocol);
+    sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype, (*ai_ref)->ai_protocol);
     if (sock == -1)
     {
         return -1;
     }
-    setsockopt(sock, SOL_SOCKET, SO_RCVBUFFORCE,
-               &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
-    setsockopt(sock, SOL_SOCKET, SO_SNDBUFFORCE,
-               &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
+    setsockopt(sock, SOL_SOCKET, SO_RCVBUFFORCE, &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
+    setsockopt(sock, SOL_SOCKET, SO_SNDBUFFORCE, &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
 #if defined(IP_PMTUDISC_OMIT)
-    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER,
-               &(int[]){IP_PMTUDISC_OMIT}, sizeof(int));
+    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER, &(int[]){IP_PMTUDISC_OMIT}, sizeof(int));
 #elif defined(IP_MTU_DISCOVER) && defined(IP_PMTUDISC_DONT)
-    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER,
-               &(int[]){IP_PMTUDISC_DONT}, sizeof(int));
+    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER, &(int[]){IP_PMTUDISC_DONT}, sizeof(int));
 #elif defined(IP_DONTFRAG)
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]){0}, sizeof(int));
 #endif
@@ -250,8 +236,7 @@ throttled_receive(Context *const context)
     const unsigned long long time_to_wait = excess / context->pps;
     int remaining_time = (int)(time_to_wait * 1000ULL);
     int ret;
-    struct pollfd pfd = {.fd = context->sock,
-                         .events = POLLIN | POLLERR};
+    struct pollfd pfd = {.fd = context->sock, .events = POLLIN | POLLERR};
     if (context->sending == 0)
     {
         remaining_time = -1;
@@ -283,7 +268,7 @@ throttled_receive(Context *const context)
             ;
         periodically_update_status(context);
         remaining_time -= (get_nanoseconds() - now) / 1000;
-        now = remaining_time* 1000 + now;
+        now = remaining_time * 1000 + now;
     } while (remaining_time > 0);
     return 0;
 }
