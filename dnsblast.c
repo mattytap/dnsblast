@@ -18,7 +18,7 @@ init_context(Context * const context, const int sock,
     *context = (Context) {
         .received_packets = 0UL, .sent_packets = 0UL,
         .last_status_update = now, .startup_date = now,
-        .sock = sock, .ai = ai, .fuzz = fuzz, .sending = 1
+        .sock = sock, .ai = ai, .sending = 1
     };
 
     DNS_Header * const question_header = (DNS_Header *) context->question;
@@ -103,9 +103,9 @@ blast(Context * const context, const char * const name, const uint16_t type)
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t) (msg - question);
-    if (context->fuzz != 0) {
-        fuzz(question, packet_size);
-    }
+
+    fuzz(question, packet_size);
+
     printf("  C109              FD:%d BUF:%hhn N:%ld FLAGS:%d SA_FAMILY:%d SA_DATA:%s ADDRLEN:%d\n",context->sock, question, packet_size, 0,
                   context->ai->ai_addr->sa_family,context->ai->ai_addr->sa_data, context->ai->ai_addrlen);
     ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
