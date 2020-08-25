@@ -156,18 +156,6 @@ get_sock(const char *const host, const char *const port, struct addrinfo **const
     return sock;
 }
 static int
-get_sock2(const char *host, const char *port, struct addrinfo **ai)
-{
-    int sock2;
-    if ((sock2 = get_sock(host, port, ai)) == -1)
-    {
-        perror("Oops");
-        exit(EXIT_FAILURE);
-    }
-    return sock2;
-}
-
-static int
 receive(Context *const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
@@ -269,10 +257,10 @@ int main(int argc, char *argv[])
     int sock;
     uint16_t type = 0;
     host = "127.0.0.1";
-    send_count = strtoul("10", NULL, 10);
-    pps = strtoul("1", NULL, 10);
+    send_count = strtoul("100", NULL, 10);
+    pps = strtoul("10", NULL, 10);
     port = "53";
-    if ((sock = get_sock2(host, port, &ai)) == -1)
+    if ((sock = get_sock(host, port, &ai)) == -1)
     {
         perror("Oops");
         exit(EXIT_FAILURE);
