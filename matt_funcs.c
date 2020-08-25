@@ -1,6 +1,12 @@
 
 #include "dnsblast.h"
-#include "matt_funcs.c"
+static unsigned long long
+get_nanoseconds(void)
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
+}
 static int
 init_context(Context *const context, const int sock, const struct addrinfo *const ai)
 {
@@ -11,6 +17,20 @@ init_context(Context *const context, const int sock, const struct addrinfo *cons
     *question_header = (DNS_Header){
         .flags = htons(FLAGS_OPCODE_QUERY | FLAGS_RECURSION_DESIRED), .qdcount = htons(1U), .ancount = 0U, .nscount = 0U, .arcount = 0U};
     return 0;
+}
+static int
+find_name_component_len(const char *name)
+{
+    int name_pos = 0;
+    while (name[name_pos] != '.' && name[name_pos] != 0)
+    {
+        if (name_pos >= UCHAR_MAX)
+        {
+            return EOF;
+        }
+        name_pos++;
+    }
+    return name_pos;
 }
 static int
 encode_name(unsigned char **const encoded_ptr, size_t encoded_size, const char *const name)
@@ -75,6 +95,22 @@ blast(Context *const context, const char *const name, const uint16_t type)
     context->sent_packets++;
     return 0;
 }
+static struct addrinfo *
+resolve(const char *const host, const char *const port)
+{
+    //called by init - called by main
+    struct addrinfo *ai, hints;
+    memset(&hints, 0, sizeof hints);
+    hints = (struct addrinfo){
+        .ai_family = AF_UNSPEC, .ai_flags = 0, .ai_socktype = SOCK_DGRAM, .ai_protocol = IPPROTO_UDP};
+    const int gai_err = getaddrinfo(host, port, &hints, &ai);
+    if (gai_err != 0)
+    {
+        fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
+        exit(EXIT_FAILURE);
+    }
+    return ai;
+}
 static int
 get_random_name(char *const name, size_t name_size)
 {
@@ -127,17 +163,7 @@ get_sock(const char *const host, const char *const port, struct addrinfo **const
     //called by main
     int flag = 1;
     int sock;
-    struct addrinfo *ai, hints;
-    memset(&hints, 0, sizeof hints);
-    hints = (struct addrinfo){.ai_family = AF_UNSPEC, .ai_flags = 0, .ai_socktype = SOCK_DGRAM, .ai_protocol = IPPROTO_UDP};
-    const int gai_err = getaddrinfo(host, port, &hints, &ai);
-    if (gai_err != 0)
-    {
-        fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
-        exit(EXIT_FAILURE);
-    }
-    *ai_ref = ai;
-
+    *ai_ref = resolve(host, port);
     sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype, (*ai_ref)->ai_protocol);
     if (sock == -1)
     {
@@ -155,18 +181,6 @@ get_sock(const char *const host, const char *const port, struct addrinfo **const
     assert(ioctl(sock, FIONBIO, &flag) == 0);
     return sock;
 }
-static int
-get_sock2(const char *host, const char *port, struct addrinfo **ai)
-{
-    int sock2;
-    if ((sock2 = get_sock(host, port, ai)) == -1)
-    {
-        perror("Oops");
-        exit(EXIT_FAILURE);
-    }
-    return sock2;
-}
-
 static int
 receive(Context *const context)
 {
@@ -272,7 +286,7 @@ int main(int argc, char *argv[])
     send_count = strtoul("10", NULL, 10);
     pps = strtoul("1", NULL, 10);
     port = "53";
-    if ((sock = get_sock2(host, port, &ai)) == -1)
+    if ((sock = get_sock(host, port, &ai)) == -1)
     {
         perror("Oops");
         exit(EXIT_FAILURE);
