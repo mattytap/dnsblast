@@ -48,14 +48,13 @@ get_random_type(void)
 static int
 get_question(char *const name, size_t name_size, uint16_t type)
 {
-    if (rand() < PTR_PROBABILITY)
+    type = get_random_type();
+    if (type == 12)
     {
-        get_random_name(name, name_size);
-        type = get_random_type();
+        get_random_ptr(name, name_size);
     }
     else
     {
-        get_random_ptr(name, name_size);
-        type = 12U;
+        get_random_name(name, name_size);
     }
 }
