@@ -1,31 +1,3 @@
-static int
-get_random_name(char *const name, size_t name_size)
-{
-    const char charset_alnum[36] = "abcdefghijklmnopqrstuvwxyz0123456789";
-    assert(name_size > (size_t)8U);
-    const int r1 = rand(), r2 = rand();
-    name[0] = charset_alnum[(r1) % sizeof charset_alnum];
-    name[1] = charset_alnum[(r1 >> 16) % sizeof charset_alnum];
-    name[2] = charset_alnum[(r2) % sizeof charset_alnum];
-    name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
-    name[4] = '.';
-    name[5] = 'c';
-    name[6] = 'o';
-    name[7] = 'm';
-    name[8] = 0;
-    return 0;
-}
-static int
-get_random_ptr(char *const name, size_t name_size)
-{
-    assert(name_size > (size_t)15U);
-    int octet1 = (rand() % 256) + 0;
-    int octet2 = (rand() % 256) + 0;
-    int octet3 = (rand() % 256) + 0;
-    int octet4 = (rand() % 256) + 0;
-    sprintf(name, "%d%s%d%s%d%s%d", octet1, ".", octet2, ".", octet3, ".", octet4);
-    return 0;
-}
 static uint16_t
 get_random_type(void)
 {
@@ -48,13 +20,31 @@ get_random_type(void)
 static int
 get_question(char *const name, size_t name_size, uint16_t type)
 {
+    assert(name_size > (size_t)8U);
     type = get_random_type();
     if (type == 12)
     {
-        get_random_ptr(name, name_size);
+        assert(name_size > (size_t)15U);
+        int octet1 = (rand() % 256) + 0;
+        int octet2 = (rand() % 256) + 0;
+        int octet3 = (rand() % 256) + 0;
+        int octet4 = (rand() % 256) + 0;
+        sprintf(name, "%d%s%d%s%d%s%d", octet1, ".", octet2, ".", octet3, ".", octet4);
     }
     else
     {
-        get_random_name(name, name_size);
+        assert(name_size > (size_t)8U);
+        const char charset_alnum[36] = "abcdefghijklmnopqrstuvwxyz0123456789";
+        const int r1 = rand(), r2 = rand();
+        name[0] = charset_alnum[(r1) % sizeof charset_alnum];
+        name[1] = charset_alnum[(r1 >> 16) % sizeof charset_alnum];
+        name[2] = charset_alnum[(r2) % sizeof charset_alnum];
+        name[3] = charset_alnum[(r2 >> 16) % sizeof charset_alnum];
+        name[4] = '.';
+        name[5] = 'c';
+        name[6] = 'o';
+        name[7] = 'm';
+        name[8] = 0;
     }
+    return 0;
 }

@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     unsigned long send_count = ULONG_MAX;
     int sock;
     uint16_t type = 0;
-    host = "127.0.0.1";
+    host = "192.168.240.2";
     send_count = strtoul("100", NULL, 10);
     pps = strtoul("10", NULL, 10);
     port = "53";
@@ -155,15 +155,16 @@ int main(int argc, char *argv[])
     DNS_Header *const question_header2 = (DNS_Header *)context2->question;
     *question_header2 = (DNS_Header){.flags = htons(FLAGS_OPCODE_QUERY | FLAGS_RECURSION_DESIRED), .qdcount = htons(1U), .ancount = 0U, .nscount = 0U, .arcount = 0U};
     context.pps = pps;
-    srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
-    assert(send_count > 0UL);
-    do
+    srand(clock());
+    while (send_count > 0UL)
     {
         get_question(name, sizeof name, type);
         blast(&context, name, type);
         throttled_receive(&context);
-    } while (--send_count > 0UL);
-    const unsigned long long elapsed = get_nanoseconds() - context.startup_date;
+        --send_count;
+    }
+    
+    unsigned long long elapsed = get_nanoseconds() - context.startup_date;
     unsigned long long rate = context.received_packets * 1000000000ULL / elapsed;
     if (rate > context.pps)
     {
@@ -178,7 +179,7 @@ int main(int argc, char *argv[])
     }
     freeaddrinfo(ai);
     assert(close(sock) == 0);
-    const unsigned long long elapsed3 = get_nanoseconds() - context.startup_date;
+    elapsed = get_nanoseconds() - context.startup_date;
     rate = context.received_packets * 1000000000ULL / elapsed;
     if (rate > context.pps)
     {

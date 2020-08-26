@@ -9,8 +9,7 @@ encode_name(unsigned char **const encoded_ptr, size_t encoded_size, const char *
     for (;;)
     {
         name_current_pos = find_name_component_len(name_current);
-        if (name_current_pos == EOF ||
-            encoded_size <= (size_t)name_current_pos)
+        if (name_current_pos == EOF || encoded_size <= (size_t)name_current_pos)
         {
             return -1;
         }

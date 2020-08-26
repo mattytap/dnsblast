@@ -6,6 +6,7 @@ get_nanoseconds(void)
     gettimeofday(&tv, NULL);
     return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
 }
+
 static int
 find_name_component_len(const char *name)
 {
@@ -20,6 +21,7 @@ find_name_component_len(const char *name)
     }
     return name_pos;
 }
+
 static int
 get_sock(const char *const host, const char *const port, struct addrinfo **const ai_ref)
 {

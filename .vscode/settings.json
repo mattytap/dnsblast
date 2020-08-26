@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "cstdio": "c"
-    }
+    },
+    "editor.fontSize": 12
 }
