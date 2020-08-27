@@ -16,7 +16,7 @@ init_context(Context *const context, const int sock,
 {
     const unsigned long long now = get_nanoseconds();
     *context = (Context){
-        .received_packets = 0UL, .sent_packets = 0UL, .last_status_update = now, .startup_date = now, .sock = sock, .ai = ai, .sending = 1};
+        .received_packets = 0UL, .sent_packets = 0UL, .last_status_update = now, .startup_date = now, .sock = sock, .fuzz = fuzz, .ai = ai, .sending = 1};
 
     DNS_Header *const question_header = (DNS_Header *)context->question;
     *question_header = (DNS_Header){
@@ -337,7 +337,7 @@ throttled_receive(Context *const context)
     const unsigned long long excess = context->sent_packets - max_packets;
     const unsigned long long time_to_wait = excess / context->pps;
     int remaining_time = (int)(time_to_wait * 1000ULL);
-    int ret;
+    int ret = 0;
     struct pollfd pfd = {.fd = context->sock,
                          .events = POLLIN | POLLERR};
     if (context->sending == 0)

@@ -1,7 +1,17 @@
-
 #include "dnsblast.h"
 #include "matt_funcs.c"
-
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+//
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 static int
 receive(Context *const context)
 {
@@ -19,6 +29,8 @@ receive(Context *const context)
     context->received_packets++;
     return 0;
 }
+//---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 static int
 periodically_update_status(Context *const context)
 {
@@ -38,6 +50,9 @@ periodically_update_status(Context *const context)
     context->last_status_update = now;
     return 0;
 }
+//---------------------------------------------------------------------------------
+//
+//---------------------------------------------------------------------------------
 static int
 throttled_receive(Context *const context)
 {
@@ -45,7 +60,6 @@ throttled_receive(Context *const context)
     const unsigned long long elapsed = now - context->startup_date;
     const unsigned long long max_packets =
         context->pps * elapsed / 1000000000UL;
-    const float elapseds = elapsed / 1000000UL;
     if (context->sending == 1 && context->sent_packets <= max_packets)
     {
         while (receive(context) == 0)
@@ -92,9 +106,10 @@ throttled_receive(Context *const context)
     } while (remaining_time > 0);
     return 0;
 }
+//---------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
-    char name[16U] = ".";
+    char name[20U] = ".";
     Context context;
     struct addrinfo *ai;
     const char *host;
@@ -103,6 +118,8 @@ int main(int argc, char *argv[])
     unsigned long send_count = ULONG_MAX;
     int sock;
     uint16_t type = 0;
+        argv++;
+        argc--;
     host = "192.168.240.2";
     send_count = strtoul("100", NULL, 10);
     pps = strtoul("10", NULL, 10);
@@ -119,13 +136,13 @@ int main(int argc, char *argv[])
     DNS_Header *const question_header2 = (DNS_Header *)context2->question;
     *question_header2 = (DNS_Header){.flags = htons(FLAGS_OPCODE_QUERY | FLAGS_RECURSION_DESIRED), .qdcount = htons(1U), .ancount = 0U, .nscount = 0U, .arcount = 0U};
     context.pps = pps;
-    srand(clock());
+    srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     while (send_count > 0UL)
     {
         get_question(name, sizeof name, type);
+        printf("Question: %s \n", name);
         Context *const context3 = &context;
         const char *const name3 = name;
-        printf("Question: %d \n",name3);
         unsigned char *const question3 = context3->question;
         DNS_Header *const question3_header = (DNS_Header *)question3;
         unsigned char *const question3_data = question3 + sizeof *question3_header;
@@ -154,11 +171,9 @@ int main(int argc, char *argv[])
             sendtov = sendto(context3->sock, question3, packet_size, 0, context3->ai->ai_addr, context3->ai->ai_addrlen);
         }
         context3->sent_packets++;
-
         throttled_receive(&context);
         --send_count;
     }
-
     unsigned long long elapsed = get_nanoseconds() - context.startup_date;
     unsigned long long rate = context.received_packets * 1000000000ULL / elapsed;
     if (rate > context.pps)

@@ -8,7 +8,10 @@ DEBUGFLAGS ?= -Waggregate-return -Wcast-align -Wcast-qual \
 
 CFLAGS ?= $(OPTIMIZATION) $(STDFLAGS) $(DEBUGFLAGS)
 
-all: dnsblast
+all: dnsblast matt
+
+matt: Makefile matt.o
+	$(CC) matt.o -o matt $(LDFLAGS)
 
 dnsblast: Makefile dnsblast.o
 	$(CC) dnsblast.o -o dnsblast $(LDFLAGS)
@@ -18,4 +21,5 @@ dnsblast.o: Makefile dnsblast.c dns.h dnsblast.h
 
 clean:
 	rm -f dnsblast *.a *.d *.o
+	rm -f matt *.a *.d *.o
 	rm -rf *.dSYM
