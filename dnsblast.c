@@ -1,5 +1,4 @@
 #include "dnsblast.h"
-//---------------------------------------------------------------------------------
 static unsigned long long
 get_nanoseconds(void)
 {
@@ -7,7 +6,6 @@ get_nanoseconds(void)
     gettimeofday(&tv, NULL);
     return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
 }
-//---------------------------------------------------------------------------------
 static int
 init_context(Context *const context, const int sock, const struct addrinfo *const ai, const _Bool fuzz)
 {
@@ -17,7 +15,6 @@ init_context(Context *const context, const int sock, const struct addrinfo *cons
     *question_header = (DNS_Header){.flags = htons(FLAGS_OPCODE_QUERY | FLAGS_RECURSION_DESIRED), .qdcount = htons(1U), .ancount = 0U, .nscount = 0U, .arcount = 0U};
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 find_name_component_len(const char *name)
 {
@@ -32,7 +29,6 @@ find_name_component_len(const char *name)
     }
     return name_pos;
 }
-//---------------------------------------------------------------------------------
 static int
 encode_name(unsigned char **const encoded_ptr, size_t encoded_size, const char *const name)
 {
@@ -62,7 +58,6 @@ encode_name(unsigned char **const encoded_ptr, size_t encoded_size, const char *
     *encoded_ptr = encoded;
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 fuzz(unsigned char *const question, const size_t packet_size)
 {
@@ -73,7 +68,6 @@ fuzz(unsigned char *const question, const size_t packet_size)
     } while (rand() < p && (p = p / 2) > 0);
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 blast(Context *const context, const char *const name, const uint16_t type)
 {
@@ -108,14 +102,12 @@ blast(Context *const context, const char *const name, const uint16_t type)
     printf("  C124              ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld TYPE:%d NAME:%s SENDTO:%ld PACKET_SIZE:%ld MSG:%s----->\n", context->id, context->sending, context->sent_packets, context->received_packets, type, name, sendtov, packet_size, msg);
     return 0;
 }
-//---------------------------------------------------------------------------------
 static void
 usage(void)
 {
     puts("\nUsage: dnsblast [fuzz] <host> [<count>] [<pps>] [<port>]\n");
     exit(EXIT_SUCCESS);
 }
-//---------------------------------------------------------------------------------
 static struct addrinfo *
 resolve(const char *const host, const char *const port)
 {
@@ -131,7 +123,8 @@ resolve(const char *const host, const char *const port)
     }
     return ai;
 }
-//---------------------------------------------------------------------------------
+// get queestion
+//
 static uint16_t
 get_question(void)
 {
@@ -149,7 +142,6 @@ get_question(void)
     } while (++i < weighted_types_len);
     return weighted_types[rand() % weighted_types_len].type;
 }
-//---------------------------------------------------------------------------------
 static int
 get_random_ptr(char *const name, size_t name_size)
 {
@@ -161,7 +153,6 @@ get_random_ptr(char *const name, size_t name_size)
     sprintf(name, "%d%s%d%s%d%s%d", octet1, ".", octet2, ".", octet3, ".", octet4);
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 get_random_name(char *const name, size_t name_size)
 {
@@ -180,18 +171,14 @@ get_random_name(char *const name, size_t name_size)
     //
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 get_sock(const char *const host, const char *const port,
          struct addrinfo **const ai_ref)
 {
-    //called by main
     int flag = 1;
     int sock;
-    // ai_ref //
     *ai_ref = resolve(host, port);
-    sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype,
-                  (*ai_ref)->ai_protocol);
+    sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype, (*ai_ref)->ai_protocol);
     if (sock == -1)
     {
         return -1;
@@ -212,7 +199,6 @@ get_sock(const char *const host, const char *const port,
     assert(ioctl(sock, FIONBIO, &flag) == 0);
     return sock;
 }
-//---------------------------------------------------------------------------------
 static int
 receive(Context *const context)
 {
@@ -235,7 +221,6 @@ receive(Context *const context)
     printf("4         R253 <----ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld ADDRLEN:%d BUF:%hhn SOCK:%d RECV:%ld\n", context->id, context->sending, context->sent_packets, context->received_packets, context->ai->ai_addrlen, buf, context->sock, recvv);
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 update_status(const Context *const context)
 {
@@ -255,7 +240,6 @@ update_status(const Context *const context)
     fflush(stdout);
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 periodically_update_status(Context *const context)
 {
@@ -268,7 +252,6 @@ periodically_update_status(Context *const context)
     context->last_status_update = now;
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 empty_receive_queue(Context *const context)
 {
@@ -280,7 +263,6 @@ empty_receive_queue(Context *const context)
     //
     return 0;
 }
-//---------------------------------------------------------------------------------
 static int
 throttled_receive(Context *const context)
 {
@@ -347,7 +329,6 @@ throttled_receive(Context *const context)
     printf("    TR361 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n", context->id, context->sending, context->sent_packets, context->received_packets, max_packets, elapseds);
     return 0;
 }
-//---------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
     char name[100U] = ".";

@@ -54,8 +54,6 @@ usage(void)
     puts("\nUsage: dnsblast [fuzz] <host> [<count>] [<pps>] [<port>]\n");
     exit(EXIT_SUCCESS);
 }
-// get queestion
-//
 static int
 get_question(char *const name, size_t name_size, uint16_t type)
 {

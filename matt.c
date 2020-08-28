@@ -1,17 +1,5 @@
 #include "dnsblast.h"
 #include "matt_funcs.c"
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
-//
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
 static int
 receive(Context *const context)
 {
@@ -29,8 +17,8 @@ receive(Context *const context)
     context->received_packets++;
     return 0;
 }
-//---------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------
+//##
+//--
 static int
 periodically_update_status(Context *const context)
 {
@@ -50,9 +38,6 @@ periodically_update_status(Context *const context)
     context->last_status_update = now;
     return 0;
 }
-//---------------------------------------------------------------------------------
-//
-//---------------------------------------------------------------------------------
 static int
 throttled_receive(Context *const context)
 {
@@ -106,7 +91,6 @@ throttled_receive(Context *const context)
     } while (remaining_time > 0);
     return 0;
 }
-//---------------------------------------------------------------------------------
 int main(int argc, char *argv[])
 {
     char name[20U] = ".";
@@ -118,17 +102,44 @@ int main(int argc, char *argv[])
     unsigned long send_count = ULONG_MAX;
     int sock;
     uint16_t type = 0;
+//    _Bool fuzz = 0;
+    if (argc < 2 || argc > 6)
+    {
+        usage();
+    }
+    if (strcasecmp(argv[1], "fuzz") == 0)
+    {
+//        fuzz = 1;
         argv++;
         argc--;
-    host = "192.168.240.2";
-    send_count = strtoul("100", NULL, 10);
-    pps = strtoul("10", NULL, 10);
+    }
+    if (argc < 1)
+    {
+        usage();
+    }
+    host = argv[1];
+    if (argc > 2)
+    {
+        send_count = strtoul(argv[2], NULL, 10);
+    }
+    if (argc > 3)
+    {
+        pps = strtoul(argv[3], NULL, 10);
+    }
+    if (argc > 4)
+    {
+        port = argv[4];
+    }
+    host = "10.0.0.4";
+    send_count = strtoul("10", NULL, 10);
+    pps = strtoul("1", NULL, 10);
     port = "5335";
     if ((sock = get_sock(host, port, &ai)) == -1)
     {
         perror("Oops");
         exit(EXIT_FAILURE);
     }
+    printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n", host, port, sock, ai->ai_addr->sa_data, ai->ai_addrlen); //HEADER
     Context *const context2 = &context;
     const struct addrinfo *const ai2 = ai;
     const unsigned long long now2 = get_nanoseconds();
