@@ -1,11 +1,11 @@
 // Client side implementation of UDP client-server model
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
+//#include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
+//#include <arpa/inet.h>
 #include <netinet/in.h>
 #define V4IP 0x0A000004
 #define PORT 53
@@ -17,16 +17,9 @@ int main()
     char buffer[MAXLINE];
     const char *hello = "Hello from client";
     struct sockaddr_in servaddr;
-
     // Creating socket file descriptor
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-    {
-        perror("socket creation failed");
-        exit(EXIT_FAILURE);
-    }
-
+    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     memset(&servaddr, 0, sizeof(servaddr));
-
     // Filling server information
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(PORT);
