@@ -173,11 +173,11 @@ throttled_receive(Context *const context)
     do
     {
         //gets stuck on next line
-        ret = poll(&pfd, (nfds_t)1, remaining_time);
-        printf("      POLL3 <-------REMAINING_TIME:%d EVENTS:%d RET:%d\n", remaining_time, pfd.events, ret);
-        printf("      POLL4 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n", context->id, context->sending, context->sent_packets, context->received_packets, max_packets, elapseds);
+        ret = poll(&pfd, (nfds_t)1, 1000);
+        printf("      POLL3 <-------REMAINING_TIME:%d EVENTS:%d RET:%d\n", 1000, pfd.events, ret);
+        printf("      POLL4 <-------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n", context->id, context->sending, context->sent_packets, context->received_packets, 1000, 1000);
         printf("      ---------------------------------------------------------------------------------------------------------------------------\n");
-        printf("    TR340 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n", context->id, context->sending, context->sent_packets, context->received_packets, max_packets, elapseds);
+        printf("    TR340 <---------ID:%d SENDING:%d SENT_PACKETS:%ld RECEIVED_PACKETS:%ld MAX_PACKETS:%lld ELAPSED:%f\n", context->id, context->sending, context->sent_packets, context->received_packets, 1000, 1000);
         if (ret == 0)
         {
             return 0;
