@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": ["192.168.240.2", "5336", "100","10"],
+            "args": ["bbc.co.uk", "5336", "100","10"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
