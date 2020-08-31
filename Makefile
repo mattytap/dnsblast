@@ -8,7 +8,7 @@ DEBUGFLAGS ?= -Waggregate-return -Wcast-align -Wcast-qual \
 
 CFLAGS ?= $(OPTIMIZATION) $(STDFLAGS) $(DEBUGFLAGS)
 
-all: ClientTCP matt mattnew dnsblast.o Untitled-server Untitled-client
+all: matt mattnew ClientTCP Untitled-server Untitled-client dns5 dns6 dnsblast.o
 
 mattnew: Makefile mattnew.o
 	$(CC) mattnew.o -o mattnew $(LDFLAGS)
@@ -25,6 +25,12 @@ Untitled-server: Makefile Untitled-server.o
 Untitled-client: Makefile Untitled-client.o
 	$(CC) Untitled-client.o -o Untitled-client $(LDFLAGS)
 
+dns5: Makefile dns5.o
+	$(CC) dns5.o -o dns5 $(LDFLAGS)
+
+dns6: Makefile dns6.o
+	$(CC) dns6.o -o dns6 $(LDFLAGS)
+
 
 
 dnsblast.o: Makefile dnsblast.c dns.h dnsblast.h
@@ -38,5 +44,7 @@ clean:
 	rm -f matt *.a *.d *.o
 	rm -f Untitled-server *.a *.d *.o
 	rm -f Untitled-client *.a *.d *.o
+	rm -f dns5 *.a *.d *.o
+	rm -f dns6 *.a *.d *.o
 	rm -f ClientTCP *.a *.d *.o
 	rm -rf *.dSYM
