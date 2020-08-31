@@ -19,10 +19,10 @@ matt: Makefile matt.o
 ClientTCP: Makefile ClientTCP.o
 	$(CC) ClientTCP.o -o ClientTCP $(LDFLAGS)
 
-Untitled-server.o: Makefile Untitled-server.o
+Untitled-server: Makefile Untitled-server.o
 	$(CC) Untitled-server.o -o Untitled-server $(LDFLAGS)
 
-Untitled-client.o: Makefile Untitled-client.o
+Untitled-client: Makefile Untitled-client.o
 	$(CC) Untitled-client.o -o Untitled-client $(LDFLAGS)
 
 
