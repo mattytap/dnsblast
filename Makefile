@@ -8,37 +8,35 @@ DEBUGFLAGS ?= -Waggregate-return -Wcast-align -Wcast-qual \
 
 CFLAGS ?= $(OPTIMIZATION) $(STDFLAGS) $(DEBUGFLAGS)
 
-all: matt mattnew ClientTCP Untitled-server Untitled-client dns5 dns6 server dnsblast.o
+all: dnsblast.o mattblast sock-client sock-server ClientTCP getaddrinfo gethostbyname UDP-client UDP-server 
 
-mattnew: Makefile mattnew.o
-	$(CC) mattnew.o -o mattnew $(LDFLAGS)
+mattblast: Makefile mattblast.o
+	$(CC) mattblast.o -o mattblast $(LDFLAGS)
 
-matt: Makefile matt.o
-	$(CC) matt.o -o matt $(LDFLAGS)
+sock-client: Makefile sock-client.o
+	$(CC) sock-client.o -o sock-client $(LDFLAGS)
+
+sock-server: Makefile sock-server.o
+	$(CC) sock-server.o -o sock-server $(LDFLAGS)
 
 ClientTCP: Makefile ClientTCP.o
 	$(CC) ClientTCP.o -o ClientTCP $(LDFLAGS)
 
-Untitled-server: Makefile Untitled-server.o
-	$(CC) Untitled-server.o -o Untitled-server $(LDFLAGS)
+getaddrinfo: Makefile getaddrinfo.o
+	$(CC) getaddrinfo.o -o getaddrinfo $(LDFLAGS)
 
-Untitled-client: Makefile Untitled-client.o
-	$(CC) Untitled-client.o -o Untitled-client $(LDFLAGS)
+gethostbyname: Makefile gethostbyname.o
+	$(CC) gethostbyname.o -o gethostbyname $(LDFLAGS)
 
-dns5: Makefile dns5.o
-	$(CC) dns5.o -o dns5 $(LDFLAGS)
+UDP-client: Makefile UDP-client.o
+	$(CC) UDP-client.o -o UDP-client $(LDFLAGS)
 
-dns6: Makefile dns6.o
-	$(CC) dns6.o -o dns6 $(LDFLAGS)
-
-server: Makefile server.o
-	$(CC) -c server.o -o server $(CFLAGS)
-
+UDP-server: Makefile UDP-server.o
+	$(CC) UDP-server.o -o UDP-server $(LDFLAGS)
 
 
 dnsblast.o: Makefile dnsblast.c dns.h dnsblast.h
 	$(CC) -c dnsblast.c -o dnsblast.o $(CFLAGS)
-
 
 
 clean:
