@@ -40,13 +40,6 @@ dnsblast.o: Makefile dnsblast.c dns.h dnsblast.h
 
 
 clean:
-	rm -f dnsblast *.a *.d *.o
-	rm -f mattnew *.a *.d *.o
-	rm -f matt *.a *.d *.o
-	rm -f Untitled-server *.a *.d *.o
-	rm -f Untitled-client *.a *.d *.o
-	rm -f dns5 *.a *.d *.o
-	rm -f dns6 *.a *.d *.o
-	rm -f ClientTCP *.a *.d *.o
-	rm -f server
+	rm -f *.a *.d *.o
+	rm -f dnsblast mattblast sock-client sock-server ClientTCP getaddrinfo gethostbyname UDP-client UDP-server
 	rm -rf *.dSYM
