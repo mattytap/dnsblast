@@ -20,6 +20,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#define _POSIX_C_SOURCE 200112L
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -35,6 +37,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <math.h>
+#include <netinet/tcp.h>
 #ifndef __MINGW32__
 #include <netdb.h>
 #include <errno.h>
@@ -43,7 +46,6 @@
 #include <pthread.h>
 #include <sys/un.h>
 #endif
-#include <libcork/core.h>
 
 #if defined(HAVE_SYS_IOCTL_H) && defined(HAVE_NET_IF_H) && defined(__linux__)
 #include <net/if.h>
@@ -51,13 +53,15 @@
 #define SET_INTERFACE
 #endif
 
-#include "netutils.h"
-#include "utils.h"
-#include "acl.h"
-#include "plugin.h"
-#include "server.h"
-#include "winsock.h"
-#include "resolv.h"
+#include "shadowsocks-libev/netutils.h"
+#include "shadowsocks-libev/utils.h"
+#include "shadowsocks-libev/acl.h"
+#include "shadowsocks-libev/plugin.h"
+#include "shadowsocks-libev/server.h"
+#include "shadowsocks-libev/winsock.h"
+#include "shadowsocks-libev/resolv.h"
+#include <libcork/core.h>
+//#include "mbedtls/cipher.h"
 
 #ifndef EAGAIN
 #define EAGAIN EWOULDBLOCK

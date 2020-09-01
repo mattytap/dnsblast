@@ -1,3 +1,4 @@
+// traditional gethostbyname function to retrieve information about a hostname/domain name.
 #define _POSIX_C_SOURCE 200112L
 
 #include <stdio.h>	//printf

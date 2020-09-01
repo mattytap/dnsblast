@@ -1,5 +1,5 @@
 #include "dnsblast.h"
-#include "mattnew_funcs.c"
+#include "mattblast_funcs.c"
 static int
 receive(Context *const context)
 {

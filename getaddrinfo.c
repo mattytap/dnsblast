@@ -1,3 +1,4 @@
+// getaddrinfo function to retrieve information about a hostname/domain name. The getaddrinfo supports ipv6 better.
 #define _POSIX_C_SOURCE 200112L
 
 #include <stdio.h>	//printf

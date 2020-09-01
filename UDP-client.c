@@ -37,8 +37,8 @@ int main() {
     const char *matt = inet_ntop(AF_INET,0,&servaddr.sin_addr.s_addr,strlen(&servaddr.sin_addr.s_addr));
 
     printf("Matt: %s\n", matt);
-    int len;
-    size_t sendtov, n;
+    int n, len;
+    size_t sendtov;
     if ((sendtov = sendto(sockfd, (const char *)hello, strlen(hello), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr, 
             sizeof(servaddr))) != strlen(hello))
@@ -49,7 +49,7 @@ int main() {
     printf("Hello message sent.\n");
 
     n = recvfrom(sockfd, (char *)buffer, MAXLINE, 
-        MSG_WAITFORONE, (struct sockaddr *) &servaddr, 
+        MSG_WAITALL, (struct sockaddr *) &servaddr, 
                 &len);
     buffer[n] = '\0';
     printf("Server : %s\n", buffer);
