@@ -9,7 +9,7 @@
 #include <arpa/inet.h> 
 #include <netinet/in.h>
 
-#define HOST    ((const unsigned char *)"10.0.0.4")
+#define HOST    ((const unsigned char *)"127.0.0.1")
 #define PORT    5336
 #define MAXLINE 1024
 
@@ -34,18 +34,22 @@ int main() {
     servaddr.sin_family = AF_INET; // IP protocol family.
     servaddr.sin_port = htons(PORT); // 53 Big Endian short interger
     servaddr.sin_addr.s_addr = inet_addr(HOST); // Big Endian format. see htonl()
-    const char *matt = inet_ntop(AF_INET,0,&servaddr.sin_addr.s_addr,strlen(&servaddr.sin_addr.s_addr));
+//    const char *matt = inet_ntop(AF_INET,0,&servaddr.sin_addr.s_addr,strlen(&servaddr.sin_addr.s_addr));
 
-    printf("Matt: %s\n", matt);
+//    printf("Matt: %s\n", matt);
+//    int n, len;
+//    size_t sendtov;
+//    if ((sendtov = sendto(sockfd, (const char *)hello, strlen(hello), 
+//        MSG_CONFIRM, (const struct sockaddr *) &servaddr, 
+//            sizeof(servaddr))) != strlen(hello))
+//    {
+//        perror("sendto failed");
+//        exit(EXIT_FAILURE);
+//    }
     int n, len;
-    size_t sendtov;
-    if ((sendtov = sendto(sockfd, (const char *)hello, strlen(hello), 
+    sendto(sockfd, (const char *)hello, strlen(hello), 
         MSG_CONFIRM, (const struct sockaddr *) &servaddr, 
-            sizeof(servaddr))) != strlen(hello))
-    {
-        perror("sendto failed");
-        exit(EXIT_FAILURE);
-    }
+            sizeof(servaddr));
     printf("Hello message sent.\n");
 
     n = recvfrom(sockfd, (char *)buffer, MAXLINE, 
