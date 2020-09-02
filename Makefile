@@ -8,7 +8,7 @@ DEBUGFLAGS ?= -Waggregate-return -Wcast-align -Wcast-qual \
 
 CFLAGS ?= $(OPTIMIZATION) $(STDFLAGS) $(DEBUGFLAGS)
 
-all: dnsblast.o mattblast sock-client sock-server ClientTCP getaddrinfo gethostbyname UDP-client UDP-server 
+all: dnsblast.o mattblast sock-client sock-server getaddrinfo gethostbyname UDP-client UDP-server 
 
 mattblast: Makefile mattblast.o
 	$(CC) mattblast.o -o mattblast $(LDFLAGS)
@@ -18,9 +18,6 @@ sock-client: Makefile sock-client.o
 
 sock-server: Makefile sock-server.o
 	$(CC) sock-server.o -o sock-server $(LDFLAGS)
-
-ClientTCP: Makefile ClientTCP.o
-	$(CC) ClientTCP.o -o ClientTCP $(LDFLAGS)
 
 getaddrinfo: Makefile getaddrinfo.o
 	$(CC) getaddrinfo.o -o getaddrinfo $(LDFLAGS)

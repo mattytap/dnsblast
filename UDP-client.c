@@ -1,20 +1,24 @@
-
 // Client side implementation of UDP client-server model
-#include <stdio.h>
-#include <stdlib.h>
+
+//#define _POSIX_C_SOURCE 200112L
+#include <stdio.h>	//printf
+#include <stdlib.h> //for exit(0);
+#include <string.h> //memset
+// #include <errno.h> //For errno - the error number
+#include <unistd.h> 
+// #include <netdb.h> //hostent
 #include <unistd.h>
-#include <string.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
 #include <arpa/inet.h> 
+#include <sys/types.h> 
 #include <netinet/in.h>
+#include <sys/socket.h>
 
 #define HOST    ((const unsigned char *)"127.0.0.1")
-#define PORT    5336
+#define PORT 2300
 #define MAXLINE 1024
-
 // Driver code 
-int main() { 
+int main()
+{ 
     int sockfd;
     char buffer[MAXLINE];
     char *hello = "Hello from client"; 
