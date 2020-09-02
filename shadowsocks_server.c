@@ -53,13 +53,13 @@
 #define SET_INTERFACE
 #endif
 
-#include "netutils.h"
-#include "utils.h"
-#include "acl.h"
-#include "plugin.h"
-#include "server.h"
-#include "winsock.h"
-#include "resolv.h"
+#include "shadowsocks-libev/netutils.h"
+#include "shadowsocks-libev/utils.h"
+#include "shadowsocks-libev/acl.h"
+#include "shadowsocks-libev/plugin.h"
+#include "shadowsocks-libev/server.h"
+#include "shadowsocks-libev/winsock.h"
+#include "shadowsocks-libev/resolv.h"
 
 #ifndef EAGAIN
 #define EAGAIN EWOULDBLOCK
