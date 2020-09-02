@@ -1,13 +1,17 @@
 // https://en.wikibooks.org/wiki/C_Programming/Networking_in_UNIX
+// does not die
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
+//#define _POSIX_C_SOURCE 200112L
+
+#include <stdio.h>	//printf
+#include <stdlib.h> //for exit(0);
+#include <string.h> //memset
+#include <errno.h> //For errno - the error number#include <unistd.h> 
+#include <netdb.h> //hostent
+#include <arpa/inet.h> 
+#include <sys/types.h> 
+#include <netinet/in.h> 
+#include <sys/socket.h> 
  
 #define PORTNUM 2300
  
