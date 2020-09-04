@@ -1,41 +1,46 @@
 // https://en.wikibooks.org/wiki/C_Programming/Networking_in_UNIX
-// does not die
 //#define _POSIX_C_SOURCE 200112L
-#include <stdio.h>  //printf
+#include <stdio.h>  //printf, perror
 #include <stdlib.h> //for exit(0);
 #include <string.h> //memset
 #include <errno.h>  //For errno - the error number
 #include <unistd.h>
 #include <netdb.h> //hostent
-// #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <netinet/in.h> //sockaddr_in
 #include <sys/socket.h>
 #define PORT 2300
-// int main(int argc, char *argv[])
 int main()
 {
-    char *msg = "Hello World !\n";
-    int mysocket, datasize;        /* socket used to listen for incoming connections */
-    struct sockaddr_in clientaddr; /* socket info about the machine connecting to us */
-    struct sockaddr_in servaddr; /* socket info about our server */
+    const char *msg = "Welcome to server";
+    int sockfd, datasize;
+    struct sockaddr_in servaddr;
     socklen_t socksize = sizeof(struct sockaddr_in);
-    memset(&servaddr, 0, sizeof(servaddr));            /* zero the struct before filling the fields */
-    servaddr.sin_family = AF_INET;                     /* set the type of connection to TCP/IP */
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);      /* set our address to any interface */
-    servaddr.sin_port = htons(PORT);                   /* set the server port number */
-    mysocket = socket(AF_INET, SOCK_STREAM, 0);
-    bind(mysocket, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)); // bind serv information to mysocket
-    listen(mysocket, 1); // start listening, allowing a queue of up to 1 pending connection
-    datasize = accept(mysocket, (struct sockaddr *)&clientaddr, &socksize); // data exchanged client->server
+    struct sockaddr_in clientaddr;
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(PORT);
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+    if ((bind(sockfd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0))
+    {
+        perror("bind failed");
+        exit(EXIT_FAILURE);
+    }
+    listen(sockfd, 1); // 1 pending connection
+    datasize = accept(sockfd, (struct sockaddr *)&clientaddr, &socksize);
     while (datasize)
     {
-        printf("Incoming connection from %s - sending welcome\n", inet_ntoa(clientaddr.sin_addr));
+        printf("Incoming connection from %s - sending a welcome msg\n", inet_ntoa(clientaddr.sin_addr));
         send(datasize, msg, strlen(msg), 0);
         close(datasize);
-        datasize = accept(mysocket, (struct sockaddr *)&clientaddr, &socksize);
+        datasize = accept(sockfd, (struct sockaddr *)&clientaddr, &socksize);
     }
-    close(mysocket);
+    close(sockfd);
     return EXIT_SUCCESS;
 }
