@@ -1,7 +1,6 @@
-// Server side implementation of UDP client-server model
-// dies
+// https://www.geeksforgeeks.org/udp-server-client-implementation-c/
 //#define _POSIX_C_SOURCE 200112L
-#include <stdio.h>  //printf
+#include <stdio.h>  //printf, perror
 #include <stdlib.h> //for exit(0);
 #include <string.h> //memset
 // #include <errno.h> //For errno - the error number
@@ -14,38 +13,40 @@
 
 #define PORT 2300
 #define MAXLINE 1024
-// int main(int argc, char *argv[])
 int main()
 {
-    const char *hello = "Hello from server\n";
-    int sockfd, n; /* socket used to listen for incoming connections */
+    const char *msg = "Welcome to server";
+    int sockfd, datasize;
     char buffer[MAXLINE];
-    struct sockaddr_in servaddr; /* socket info about our server */
-    struct sockaddr_in cliaddr;
-    memset(&servaddr, 0, sizeof(servaddr)); /* zero the struct before filling the fields */
-    memset(&cliaddr, 0, sizeof(cliaddr));
-    // Filling server information
-    servaddr.sin_family = AF_INET;                /* set the type of connection to TCP/IP */
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY); /* set our address to any interface */
-    servaddr.sin_port = htons(PORT);              /* set the server port number */
-    // Creating socket file descriptor
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) //UDP use SOCK_DGRAM
+    struct sockaddr_in servaddr;
+    socklen_t socksize = sizeof(struct sockaddr_in);
+    struct sockaddr_in clientaddr;
+    memset(&servaddr, 0, sizeof(servaddr));
+    memset(&clientaddr, 0, sizeof(clientaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(PORT);
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
-    // Bind the socket with the server address
-    if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
+    if (bind(sockfd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0)
     {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    int len;
-    len = sizeof(cliaddr); //len is value/resuslt
-    n = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *)&cliaddr, len);
-    buffer[n] = '\0';
-    printf("Client : %s\n", buffer);
-    sendto(sockfd, (const char *)hello, strlen(hello), MSG_CONFIRM, (const struct sockaddr *)&cliaddr, len);
-    printf("Hello message sent.\n");
-    return 0;
+    //
+    datasize = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *)&clientaddr, &socksize);
+    buffer[datasize] = '\0';
+    while (datasize)
+    {
+        printf("Client : %s\n", buffer);
+        sendto(sockfd, msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *)&clientaddr, socksize);
+        printf("Hello message sent.\n");
+        close(datasize);
+        datasize = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *)&clientaddr, &socksize);
+    }
+    close(sockfd);
+    return EXIT_SUCCESS;
 }

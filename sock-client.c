@@ -3,7 +3,7 @@
 #include <stdio.h>  //printf, perror
 #include <stdlib.h> //for exit(0);
 #include <string.h> //memset
-#include <errno.h>  //For errno - the error number
+#include <errno.h> //For errno - the error number
 #include <unistd.h>
 #include <netdb.h> //hostent
 #include <arpa/inet.h>
@@ -21,6 +21,7 @@ int main()
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     servaddr.sin_port = htons(PORT);
+    // Creating socket file descriptor
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         perror("socket creation failed");

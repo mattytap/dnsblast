@@ -3,7 +3,7 @@
 #include <stdio.h>  //printf, perror
 #include <stdlib.h> //for exit(0);
 #include <string.h> //memset
-#include <errno.h>  //For errno - the error number
+#include <errno.h> //For errno - the error number
 #include <unistd.h>
 #include <netdb.h> //hostent
 #include <arpa/inet.h>
@@ -27,7 +27,7 @@ int main()
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
-    if ((bind(sockfd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0))
+    if (bind(sockfd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0)
     {
         perror("bind failed");
         exit(EXIT_FAILURE);
