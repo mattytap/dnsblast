@@ -11,6 +11,7 @@
 #include <netinet/in.h> //sockaddr_in
 #include <sys/socket.h>
 #define MAXRCVLEN 500
+#define HOST (in_addr_t) inet_addr("127.0.0.1")
 #define PORT 2300
 #define MAXLINE 1024
 #define SOCK_TYPE SOCK_STREAM
@@ -18,18 +19,18 @@
 
 int main()
 {
-    int sockfd, msg_size;
     char msg[MAXRCVLEN + 1];
+    int sockfd, msg_size;
     struct sockaddr_in servaddr;
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    servaddr.sin_port = htons(PORT);
     if ((sockfd = socket(AF_INET, SOCK_TYPE, INTERNET_PROTOCOL)) < 0)
     {
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    servaddr.sin_port = htons(PORT);
     /*
 
     CONNECT

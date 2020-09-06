@@ -19,20 +19,19 @@ int main()
 {
     const char *msg = "Welcome to server";
     int sockfd, data_sockfd;
-    //char buffer[MAXLINE]; // only needed for UDP?
     struct sockaddr_in servaddr;
     socklen_t clientlen = sizeof(struct sockaddr_in);
     struct sockaddr_in clientaddr;
-    memset(&servaddr, 0, sizeof(servaddr));
-    memset(&clientaddr, 0, sizeof(clientaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(PORT);
     if ((sockfd = socket(AF_INET, SOCK_TYPE, INTERNET_PROTOCOL)) < 0)
     {
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
+    memset(&servaddr, 0, sizeof(servaddr));
+    memset(&clientaddr, 0, sizeof(clientaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(PORT);
     /*
     BIND
     LISTEN
@@ -54,9 +53,7 @@ int main()
     do
     {
         data_sockfd = accept(sockfd, (struct sockaddr *)&clientaddr, &clientlen);
-        //buffer[data_sockfd] = '\0'; // only needed for UDP?
         printf("Incoming connection from %s - sending a welcome msg\n", inet_ntoa(clientaddr.sin_addr));
-        //printf("Client buffer: %s\n", buffer); // only needed for UDP?
         // SEND/RECV
         send(data_sockfd, msg, strlen(msg), 0);
         printf("Hello message sent: '%s' (%ld bytes)\n", msg, strlen(msg));

@@ -18,48 +18,44 @@
 int main()
 {
     const char *msg = "Welcome to server";
-    int sockfd, date_sockfd;
-    char buffer[MAXLINE];
+    int sockfd, data_sockfd;
+    char buffer[MAXLINE]; // only needed for UDP?
     struct sockaddr_in servaddr;
-    socklen_t socksize = sizeof(struct sockaddr_in);
+    socklen_t clientlen = sizeof(struct sockaddr_in);
     struct sockaddr_in clientaddr;
+        if ((sockfd = socket(AF_INET, SOCK_TYPE, INTERNET_PROTOCOL)) < 0)
+    {
+        perror("socket creation failed");
+        exit(EXIT_FAILURE);
+    }
     memset(&servaddr, 0, sizeof(servaddr));
     memset(&clientaddr, 0, sizeof(clientaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     servaddr.sin_port = htons(PORT);
-    if ((sockfd = socket(AF_INET, SOCK_TYPE, INTERNET_PROTOCOL)) < 0)
-    {
-        perror("socket creation failed");
-        exit(EXIT_FAILURE);
-    }
-/*
-
-
-
-*/
+    /*
+    BIND
+    ------
+    RECVFROM
+    SENDTO
+    */
     if (bind(sockfd, (struct sockaddr *)&servaddr, sizeof(struct sockaddr)) < 0)
     {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    listen(sockfd, 1); // 1 pending connection only needed for TCP?
-    date_sockfd = recvfrom(sockfd,
-                           (char *)buffer, MAXLINE, MSG_WAITALL,
-                           (struct sockaddr *)&clientaddr, &socksize);
-    buffer[date_sockfd] = '\0'; // only needed for UDP?
-    while (date_sockfd)
+    do
     {
-        printf("Incoming connection from %s - sending a welcome msg\n",
-               inet_ntoa(clientaddr.sin_addr));
-        printf("Client: %s",
-               buffer);
-        sendto(sockfd, msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *)&clientaddr, socksize);
-        printf("Hello message sent.\n");
-        close(date_sockfd);
-        date_sockfd = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *)&clientaddr, &socksize);
-        buffer[date_sockfd] = '\0'; // only needed for UDP?
-    }
+        // RECVFROM/SENDTO
+        data_sockfd = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL, (struct sockaddr *)&clientaddr, &clientlen);
+        buffer[data_sockfd] = '\0'; // only needed for UDP?
+        printf("Incoming connection from %s - sending a welcome msg\n", inet_ntoa(clientaddr.sin_addr));
+        printf("Client buffer: %s", buffer); // only needed for UDP?
+        // SENDTO/RECVFROM
+        sendto(sockfd, msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *)&clientaddr, clientlen);
+        printf("Hello message sent: '%s' (%ld bytes)\n", msg, strlen(msg));
+        close(data_sockfd);
+    } while (data_sockfd);
     close(sockfd);
     return EXIT_SUCCESS;
 }
