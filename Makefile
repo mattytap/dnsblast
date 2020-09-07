@@ -8,14 +8,35 @@ DEBUGFLAGS ?= -Waggregate-return -Wcast-align -Wcast-qual \
 
 CFLAGS ?= $(OPTIMIZATION) $(STDFLAGS) $(DEBUGFLAGS)
 
-all: dnsblast
+all: dnsblast.o mattblast sock-client sock-server getaddrinfo gethostbyname UDP-client UDP-server 
 
-dnsblast: Makefile dnsblast.o
-	$(CC) dnsblast.o -o dnsblast $(LDFLAGS)
+mattblast: Makefile mattblast.o
+	$(CC) mattblast.o -o mattblast $(LDFLAGS)
+
+sock-client: Makefile sock-client.o
+	$(CC) sock-client.o -o sock-client $(LDFLAGS)
+
+sock-server: Makefile sock-server.o
+	$(CC) sock-server.o -o sock-server $(LDFLAGS)
+
+getaddrinfo: Makefile getaddrinfo.o
+	$(CC) getaddrinfo.o -o getaddrinfo $(LDFLAGS)
+
+gethostbyname: Makefile gethostbyname.o
+	$(CC) gethostbyname.o -o gethostbyname $(LDFLAGS)
+
+UDP-client: Makefile UDP-client.o
+	$(CC) UDP-client.o -o UDP-client $(LDFLAGS)
+
+UDP-server: Makefile UDP-server.o
+	$(CC) UDP-server.o -o UDP-server $(LDFLAGS)
+
 
 dnsblast.o: Makefile dnsblast.c dns.h dnsblast.h
 	$(CC) -c dnsblast.c -o dnsblast.o $(CFLAGS)
 
+
 clean:
-	rm -f dnsblast *.a *.d *.o
+	rm -f *.a *.d *.o
+	rm -f dnsblast mattblast sock-client sock-server ClientTCP getaddrinfo gethostbyname UDP-client UDP-server
 	rm -rf *.dSYM

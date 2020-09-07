@@ -9,10 +9,12 @@
 #define TYPE_SOA   6U
 #define TYPE_MX   15U
 #define TYPE_TXT  16U
+#define TYPE_PTR  12U
 #define TYPE_AAAA 28U
+#define TYPE_PTR  12U
 
 #define FLAGS_OPCODE_QUERY 0x0
-#define FLAGS_RECURSION_DESIRED 0x100
+#define FLAGS_RECURSION_DESIRED 0x80
 
 #define CLASS_IN 1U
 

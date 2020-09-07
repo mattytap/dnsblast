@@ -38,6 +38,7 @@
 #endif
 
 #define REPEATED_NAME_PROBABILITY (int) ((RAND_MAX * 13854LL) / 100000LL)
+#define PTR_PROBABILITY (int) ((RAND_MAX * 77662LL) / 100000LL)
 #define REFUZZ_PROBABILITY (int) ((RAND_MAX * 500LL) / 100000LL)
 
 typedef struct Context_ {
@@ -60,11 +61,12 @@ typedef struct WeightedType_ {
 } WeightedType;
 
 const WeightedType weighted_types[] = {
-    { .type = TYPE_A,    .weight = (int) ((RAND_MAX * 77662LL) / 100000LL) },
+    { .type = TYPE_A,    .weight = (int) ((RAND_MAX * 38831LL) / 100000LL) },
     { .type = TYPE_SOA,  .weight = (int) ((RAND_MAX *   803LL) / 100000LL) },
     { .type = TYPE_MX,   .weight = (int) ((RAND_MAX *  5073LL) / 100000LL) },
     { .type = TYPE_TXT,  .weight = (int) ((RAND_MAX *  2604LL) / 100000LL) },
-    { .type = TYPE_AAAA, .weight = (int) ((RAND_MAX * 13858LL) / 100000LL) }
+    { .type = TYPE_AAAA, .weight = (int) ((RAND_MAX * 13858LL) / 100000LL) },
+    { .type = TYPE_PTR,  .weight = (int) ((RAND_MAX * 38831LL) / 100000LL) }
 };
 
 #ifndef SO_RCVBUFFORCE
