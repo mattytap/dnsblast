@@ -1,5 +1,5 @@
-
 #include "dnsblast.h"
+
 static unsigned long long
 get_nanoseconds(void)
 {
@@ -357,21 +357,11 @@ int main(int argc, char *argv[])
     context.pps = pps;
     srand(clock()); //fixes problem with lack of randomness of rand(). MF 20200629
     assert(send_count > 0UL);
-    do
-    {
-        if (rand() < REPEATED_NAME_PROBABILITY)
-        {
-        }
-        else if (rand() < PTR_PROBABILITY)
-        {
+    do {
+        if (rand() > REPEATED_NAME_PROBABILITY) {
             get_random_name(name, sizeof name);
-            type = get_random_type();
         }
-        else
-        {
-            get_random_ptr(name, sizeof name);
-            type = 12U;
-        }
+        type = get_random_type();
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);

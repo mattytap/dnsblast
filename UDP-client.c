@@ -39,7 +39,7 @@ int main()
     RECVFROM.
     */
 
-    int len;
+    socklen_t len;
     // RECVFROM/SENDTO
     sendto(sockfd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *)&servaddr, sizeof(servaddr));
 
