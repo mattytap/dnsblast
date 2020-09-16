@@ -27,7 +27,7 @@
 
 #include "dns.h"
 
-#define MAX_UDP_DATA_SIZE    (0xffff - 20U - 8U)
+#define MAX_UDP_DATA_SIZE    (0xffff - 20U - 10U)
 
 #ifndef UPDATE_STATUS_PERIOD
 # define UPDATE_STATUS_PERIOD 500000000ULL
