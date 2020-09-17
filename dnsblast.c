@@ -241,14 +241,6 @@ update_status(const Context *const context)
         rate = context->pps;
     }
     printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \n", context->sent_packets, context->received_packets, rate, (double)context->received_packets * 100.0 / (double)context->sent_packets);
-    fflush(stdout);
-    return 0;
-}
-static int
-periodically_update_status(Context *const context)
-{
-    unsigned long long now = get_nanoseconds();
-    if (now - context->last_status_update < UPDATE_STATUS_PERIOD)
     {
         return 1;
     }
