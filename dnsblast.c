@@ -107,13 +107,15 @@ blast(Context * const context, const char * const name, const uint16_t type)
     if (context->fuzz != 0) {
         fuzz(question, packet_size);
     }
-    while (sendto(context->sock, question, packet_size, 0,
-                  context->ai->ai_addr, context->ai->ai_addrlen)
-           != (ssize_t) packet_size) {
+    ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
+                             context->ai->ai_addr, context->ai->ai_addrlen);
+    while (sendtov != (ssize_t)packet_size) {
         if (errno != EAGAIN && errno != EINTR) {
             perror("sendto");
             exit(EXIT_FAILURE);
         }
+        sendtov = sendto(context->sock, question, packet_size, 0,
+                         context->ai->ai_addr, context->ai->ai_addrlen);
     }
     context->sent_packets++;
 
@@ -181,6 +183,34 @@ get_random_type(void)
 }
 
 static int
+get_random_ptr(char *const name, size_t name_size)
+{
+    assert(name_size > (size_t)15U);
+    int octet1 = (rand() % 256) + 0;
+    int octet2 = (rand() % 256) + 0;
+    int octet3 = (rand() % 256) + 0;
+    int octet4 = (rand() % 256) + 0;
+    sprintf(name, "%d%s%d%s%d%s%d", octet1, ".", octet2, ".", octet3, ".", octet4);
+    return 0;
+}
+
+static uint16_t
+get_question(char *const name, size_t name_size, uint16_t type)
+{
+    assert(name_size > (size_t)8U);
+    type = get_random_type();
+    if (type == 12)
+    {
+        get_random_ptr(name, name_size);
+    }
+    else
+    {
+        get_random_name(name, name_size);
+    }
+    return type;
+}
+
+static int
 get_sock(const char * const host, const char * const port,
          struct addrinfo ** const ai_ref)
 {
@@ -216,11 +246,13 @@ receive(Context * const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
 
-    while (recv(context->sock, buf, sizeof buf, 0) == (ssize_t) -1) {
+    ssize_t recvv = recv(context->sock, buf, sizeof buf, 0);
+    while (recvv == (ssize_t)-1) {
         if (errno == EAGAIN) {
             return 1;
         }
         assert(errno == EINTR);
+        recvv = recv(context->sock, buf, sizeof buf, 0);
     }
     context->received_packets++;
 
@@ -238,7 +270,7 @@ update_status(const Context * const context)
         rate = context->pps;
     }
     printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \r",
+           "Ratio: [%.2f%%]  \n",
            context->sent_packets, context->received_packets, rate,
            (double) context->received_packets * 100.0 /
            (double) context->sent_packets);
@@ -327,7 +359,7 @@ main(int argc, char *argv[])
     unsigned long    pps        = ULONG_MAX;
     unsigned long    send_count = ULONG_MAX;
     int              sock;
-    uint16_t         type;
+    uint16_t         type = 12U;
     _Bool            fuzz = 0;
 
     if (argc < 2 || argc > 6) {
@@ -355,15 +387,17 @@ main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
+    printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n", host, port, sock, ai->ai_addr->sa_data, ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
-    srand(0U);
+    srand(0U); //deterministic
+    //srand(clock()); //random MF 20200629
     assert(send_count > 0UL);
     do {
         if (rand() > REPEATED_NAME_PROBABILITY) {
-            get_random_name(name, sizeof name);
+            type = get_question(name, sizeof name, type);
         }
-        type = get_random_type();
+        printf("Question: %d %s \n", type, name);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
