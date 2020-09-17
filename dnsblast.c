@@ -22,8 +22,7 @@ find_name_component_len(const char *name)
     return name_pos;
 }
 static int
-encode_name(unsigned char **const encoded_ptr, size_t encoded_size,
-            const char *const name)
+encode_name(unsigned char **const encoded_ptr, size_t encoded_size, const char *const name)
 {
     unsigned char *encoded = *encoded_ptr;
     const char *name_current = name;
@@ -58,8 +57,6 @@ usage(void)
     puts("\nUsage: dnsblast [fuzz] <host> [<count>] [<pps>] [<port>]\n");
     exit(EXIT_SUCCESS);
 }
-// get question
-//
 static uint16_t
 get_question(char *const name, size_t name_size, uint16_t type)
 {
@@ -106,43 +103,37 @@ random_type:
     return type;
 }
 static int
-get_sock(const char *const host3, const char *const port3,
-         struct addrinfo **const ai_ref3)
+get_sock(const char *const host, const char *const port, struct addrinfo **const ai_ref)
 {
-    int flag3 = 1;
-    int sock3;
-    struct addrinfo *ai3, hints3;
-    memset(&hints3, 0, sizeof hints3);
-    hints3 = (struct addrinfo){
+    int flag = 1;
+    int sock;
+    struct addrinfo *ai, hints;
+    memset(&hints, 0, sizeof hints);
+    hints = (struct addrinfo){
         .ai_family = AF_UNSPEC, .ai_flags = 0, .ai_socktype = SOCK_DGRAM, .ai_protocol = IPPROTO_UDP};
-    const int gai_err3 = getaddrinfo(host3, port3, &hints3, &ai3);
-    if (gai_err3 != 0)
+    const int gai_err = getaddrinfo(host, port, &hints, &ai);
+    if (gai_err != 0)
     {
-        fprintf(stderr, "[%s:%s]: [%s]\n", host3, port3, gai_strerror(gai_err3));
+        fprintf(stderr, "[%s:%s]: [%s]\n", host, port, gai_strerror(gai_err));
         exit(EXIT_FAILURE);
     }
-    *ai_ref3 = ai3;
-    sock3 = socket((*ai_ref3)->ai_family, (*ai_ref3)->ai_socktype,
-                   (*ai_ref3)->ai_protocol);
-    if (sock3 == -1)
+    *ai_ref = ai;
+    sock = socket((*ai_ref)->ai_family, (*ai_ref)->ai_socktype, (*ai_ref)->ai_protocol);
+    if (sock == -1)
     {
         return -1;
     }
-    setsockopt(sock3, SOL_SOCKET, SO_RCVBUFFORCE,
-               &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
-    setsockopt(sock3, SOL_SOCKET, SO_SNDBUFFORCE,
-               &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
+    setsockopt(sock, SOL_SOCKET, SO_RCVBUFFORCE, &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
+    setsockopt(sock, SOL_SOCKET, SO_SNDBUFFORCE, &(int[]){MAX_UDP_BUFFER_SIZE}, sizeof(int));
 #if defined(IP_PMTUDISC_OMIT)
-    setsockopt(sock3, IPPROTO_IP, IP_MTU_DISCOVER,
-               &(int[]){IP_PMTUDISC_OMIT}, sizeof(int));
+    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER, &(int[]){IP_PMTUDISC_OMIT}, sizeof(int));
 #elif defined(IP_MTU_DISCOVER) && defined(IP_PMTUDISC_DONT)
-    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER,
-               &(int[]){IP_PMTUDISC_DONT}, sizeof(int));
+    setsockopt(sock, IPPROTO_IP, IP_MTU_DISCOVER, &(int[]){IP_PMTUDISC_DONT}, sizeof(int));
 #elif defined(IP_DONTFRAG)
     setsockopt(sock, IPPROTO_IP, IP_DONTFRAG, &(int[]){0}, sizeof(int));
 #endif
-    assert(ioctl(sock3, FIONBIO, &flag3) == 0);
-    return sock3;
+    assert(ioctl(sock, FIONBIO, &flag) == 0);
+    return sock;
 }
 static int
 receive(Context *const context)
@@ -162,34 +153,30 @@ receive(Context *const context)
     return 0;
 }
 static int
-periodically_update_status(Context *const context23)
+periodically_update_status(Context *const context)
 {
     unsigned long long now = get_nanoseconds();
-    if (now - context23->last_status_update < UPDATE_STATUS_PERIOD)
+    if (now - context->last_status_update < UPDATE_STATUS_PERIOD)
     {
         return 1;
     }
-    const unsigned long long now23 = get_nanoseconds();
-    const unsigned long long elapsed23 = now23 - context23->startup_date;
-    unsigned long long rate23 =
-        context23->received_packets * 1000000000ULL / elapsed23;
-    if (rate23 > context23->pps)
+    const unsigned long long now2 = get_nanoseconds();
+    const unsigned long long elapsed = now2 - context->startup_date;
+    unsigned long long rate =
+        context->received_packets * 1000000000ULL / elapsed;
+    if (rate > context->pps)
     {
-        rate23 = context23->pps;
+        rate = context->pps;
     }
-    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \n",
-           context23->sent_packets, context23->received_packets, rate23,
-           (double)context23->received_packets * 100.0 /
-               (double)context23->sent_packets);
+    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \n", context->sent_packets, context->received_packets, rate, (double)context->received_packets * 100.0 / (double)context->sent_packets);
     fflush(stdout);
-    context23->last_status_update = now;
+    context->last_status_update = now;
     return 0;
 }
 static int
 throttled_receive(Context *const context10)
 {
-    unsigned long long now = get_nanoseconds(), now332;
+    unsigned long long now = get_nanoseconds(), now2;
     const unsigned long long elapsed = now - context10->startup_date;
     const unsigned long long max_packets =
         context10->pps * elapsed / 1000000000UL;
@@ -203,8 +190,7 @@ throttled_receive(Context *const context10)
     const unsigned long long time_to_wait = excess / context10->pps;
     int remaining_time = (int)(time_to_wait * 1000ULL);
     int ret;
-    struct pollfd pfd = {.fd = context10->sock,
-                         .events = POLLIN | POLLERR};
+    struct pollfd pfd = {.fd = context10->sock, .events = POLLIN | POLLERR};
     if (context10->sending == 0)
     {
         remaining_time = -1;
@@ -235,9 +221,9 @@ throttled_receive(Context *const context10)
         while (receive(context10) == 0)
             ;
         periodically_update_status(context10);
-        now332 = get_nanoseconds();
-        remaining_time -= (now332 - now) / 1000;
-        now = now332;
+        now2 = get_nanoseconds();
+        remaining_time -= (now2 - now) / 1000;
+        now = now2;
     } while (remaining_time > 0);
     return 0;
 }
@@ -303,10 +289,11 @@ int main(int argc, char *argv[])
         .nscount = 0U,
         .arcount = 0U};
     context.pps = pps;
-    srand(0U);      //deterministic
+    srand(0U); //deterministic
     //srand(clock()); //random MF 20200629
     assert(send_count > 0UL);
-    do {
+    do
+    {
         if (rand() > REPEATED_NAME_PROBABILITY)
         {
             type = get_question(name, sizeof name, type);
@@ -317,8 +304,7 @@ int main(int argc, char *argv[])
         unsigned char *const question3 = context3->question;
         DNS_Header *const question3_header = (DNS_Header *)question3;
         unsigned char *const question3_data = question3 + sizeof *question3_header;
-        const size_t sizeof_question3_data =
-            sizeof question3 - sizeof *question3_header;
+        const size_t sizeof_question3_data = sizeof question3 - sizeof *question3_header;
         question3_header->id = context3->id++;
         unsigned char *msg = question3_data;
         assert(sizeof_question3_data > (size_t)2U);
@@ -335,10 +321,8 @@ int main(int argc, char *argv[])
             {
                 question44[rand() % packet_size44] = rand() % 0xff;
             } while (rand() < p && (p = p / 2) > 0);
-
         }
-        ssize_t sendtov = sendto(context3->sock, question3, packet_size, 0,
-                                 context3->ai->ai_addr, context3->ai->ai_addrlen);
+        ssize_t sendtov = sendto(context3->sock, question3, packet_size, 0, context3->ai->ai_addr, context3->ai->ai_addrlen);
         while (sendtov != (ssize_t)packet_size)
         {
             if (errno != EAGAIN && errno != EINTR)
@@ -346,8 +330,7 @@ int main(int argc, char *argv[])
                 perror("sendto");
                 exit(EXIT_FAILURE);
             }
-            sendtov = sendto(context3->sock, question3, packet_size, 0, 
-                             context3->ai->ai_addr, context3->ai->ai_addrlen);
+            sendtov = sendto(context3->sock, question3, packet_size, 0, context3->ai->ai_addr, context3->ai->ai_addrlen);
         }
         context3->sent_packets++;
         throttled_receive(&context);
@@ -355,17 +338,12 @@ int main(int argc, char *argv[])
     const Context *const context22 = &context;
     const unsigned long long now22 = get_nanoseconds();
     const unsigned long long elapsed22 = now22 - context22->startup_date;
-    unsigned long long rate22 =
-        context22->received_packets * 1000000000ULL / elapsed22;
+    unsigned long long rate22 = context22->received_packets * 1000000000ULL / elapsed22;
     if (rate22 > context22->pps)
     {
         rate22 = context22->pps;
     }
-    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \n",
-           context22->sent_packets, context22->received_packets, rate22,
-           (double)context22->received_packets * 100.0 /
-               (double)context22->sent_packets);
+    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \n", context22->sent_packets, context22->received_packets, rate22, (double)context22->received_packets * 100.0 / (double)context22->sent_packets);
     fflush(stdout);
     context.sending = 0;
     while (context.sent_packets != context.received_packets)
@@ -383,11 +361,7 @@ int main(int argc, char *argv[])
     {
         rate21 = context21->pps;
     }
-    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \r",
-           context21->sent_packets, context21->received_packets, rate21,
-           (double)context21->received_packets * 100.0 /
-               (double)context21->sent_packets);
+    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - Ratio: [%.2f%%]  \n", context21->sent_packets, context21->received_packets, rate21, (double)context21->received_packets * 100.0 / (double)context21->sent_packets);
     fflush(stdout);
     putchar('\n');
     return 0;

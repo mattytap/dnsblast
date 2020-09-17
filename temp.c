@@ -1,4 +1,4 @@
-//mattblast.c
+
 #include "dnsblast.h"
 static unsigned long long
 get_nanoseconds(void)
@@ -162,32 +162,6 @@ get_random_type(void)
         }
     } while (++i < weighted_types_len);
     return weighted_types[rand() % weighted_types_len].type;
-}
-static int
-get_random_ptr(char *const name, size_t name_size)
-{
-    assert(name_size > (size_t)15U);
-    int octet1 = (rand() % 256) + 0;
-    int octet2 = (rand() % 256) + 0;
-    int octet3 = (rand() % 256) + 0;
-    int octet4 = (rand() % 256) + 0;
-    sprintf(name, "%d%s%d%s%d%s%d", octet1, ".", octet2, ".", octet3, ".", octet4);
-    return 0;
-}
-static uint16_t
-get_question(char *const name, size_t name_size, uint16_t type)
-{
-    assert(name_size > (size_t)8U);
-    type = get_random_type();
-    if (type == 12)
-    {
-        get_random_ptr(name, name_size);
-    }
-    else
-    {
-        get_random_name(name, name_size);
-    }
-    return type;
 }
 static int
 get_sock(const char *const host, const char *const port, struct addrinfo **const ai_ref)
@@ -372,9 +346,9 @@ int main(int argc, char *argv[])
     {
         if (rand() > REPEATED_NAME_PROBABILITY)
         {
-            type = get_question(name, sizeof name, type);
+            get_random_name(name, sizeof name);
         }
-        printf("Question: %d %s \n", type, name);
+        type = get_random_type();
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);
