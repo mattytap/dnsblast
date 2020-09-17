@@ -1,4 +1,4 @@
-//mattblast.c
+/* mattblast.c */
 #include "dnsblast.h"
 static unsigned long long
 get_nanoseconds(void)
