@@ -1,6 +1,9 @@
 
 #include "dnsblast.h"
 
+/* Flag set by ‘--verbose’. */
+static int verbose_flag, deterministic_flag;
+
 static unsigned long long
 get_nanoseconds(void)
 {
@@ -287,10 +290,12 @@ update_status(const Context *const context)
         rate = context->pps;
     }
     printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \n",
+           "Ratio: [%.2f%%]  \r",
            context->sent_packets, context->received_packets, rate,
            (double)context->received_packets * 100.0 /
                (double)context->sent_packets);
+    if (verbose_flag)
+        printf("\n");
     fflush(stdout);
 
     return 0;
@@ -374,13 +379,6 @@ throttled_receive(Context *const context)
     return 0;
 }
 
-//string trim(string &str)
-//{
-//    size_t first = str.find_first_not_of(' ');
-//    size_t last = str.find_last_not_of(' ');
-//    return str.substr(first, (last - first + 1));
-//}
-
 int main(int argc, char *argv[])
 {
     char name[100U] = ".";
@@ -388,7 +386,8 @@ int main(int argc, char *argv[])
     struct addrinfo *ai;
     const char *host = "127.0.0.1";
     const char *port = "domain";
-    unsigned long porti = strtoul("53", NULL, 10);
+    unsigned long portl = strtoul("53", NULL, 10);
+    char porta[100U] = " ";
     unsigned long pps = strtoul("1", NULL, 10);
     unsigned long send_count = strtoul("10", NULL, 10);
     int sock;
@@ -396,8 +395,6 @@ int main(int argc, char *argv[])
     _Bool fuzz = 0;
     int opt;
     int timeout;
-    /* Flag set by ‘--verbose’. */
-    static int verbose_flag, deterministic_flag = 1;
 
     static const struct option longopts[] = {
         {"port", required_argument, NULL, 'p'},
@@ -441,21 +438,22 @@ int main(int argc, char *argv[])
             usage();
             exit;
         case 'p':
-            porti = strtoul(optarg, NULL, 10);
-            port = porti;
-            printf("filename: %s\n", optarg);
+            portl = atol(optarg);
+            sprintf(porta, "%ld", portl);
+            printf("port: %s\n", porta);
+            port = porta;
             break;
         case 'c':
             send_count = strtoul(optarg, NULL, 10);
-            printf("filename: %s\n", optarg);
+            printf("send count: %s\n", optarg);
             break;
         case 's':
             pps = strtoul(optarg, NULL, 10);
-            printf("filename: %s\n", optarg);
+            printf("pps: %s\n", optarg);
             break;
         case 't':
             pps = strtoul(optarg, NULL, 10);
-            printf("filename: %s\n", optarg);
+            printf("timeout: %s\n", optarg);
             break;
         case 'f':
             fuzz = 1;
@@ -477,6 +475,8 @@ int main(int argc, char *argv[])
      we report the final status resulting from them. */
     if (verbose_flag)
         puts("verbose flag is set");
+    if (deterministic_flag)
+        puts("deterministic flag is set");
 
     // optind is for the extra arguments
     // which are not parsed
@@ -497,11 +497,17 @@ int main(int argc, char *argv[])
         perror("Oops");
         exit(EXIT_FAILURE);
     }
-    printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n", host, port, sock, ai->ai_addr->sa_data, ai->ai_addrlen); //HEADER
+    if (verbose_flag)
+        printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n", host, port, sock, ai->ai_addr->sa_data, ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
-    srand(0U); //deterministic
-    //srand(clock()); //random MF 20200629
+    if (deterministic_flag) {
+        srand(0U); //deterministic
+    }
+    else
+    {
+        srand(clock()); //random MF 20200629
+    }
     assert(send_count > 0UL);
     do
     {
@@ -509,7 +515,8 @@ int main(int argc, char *argv[])
         {
             type = get_question(name, sizeof name, type);
         }
-        printf("Question: %d %s \n", type, name);
+        if (verbose_flag)
+            printf("Question: %d %s \n", type, name);
         blast(&context, name, type);
         throttled_receive(&context);
     } while (--send_count > 0UL);

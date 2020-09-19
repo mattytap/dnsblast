@@ -28,11 +28,10 @@
 #include <locale.h>
 #include <libintl.h>
 
-#include <iostream.h>
-
 #include "dns.h"
 
 #define MAX_UDP_DATA_SIZE    (0xffff - 20U - 10U)
+#define VERBOSE (1U)
 
 #ifndef UPDATE_STATUS_PERIOD
 # define UPDATE_STATUS_PERIOD 500000000ULL
