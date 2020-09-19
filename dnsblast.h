@@ -24,6 +24,11 @@
 #include <string.h>
 #include <strings.h>
 #include <time.h>
+#include <getopt.h>
+#include <locale.h>
+#include <libintl.h>
+
+#include <iostream.h>
 
 #include "dns.h"
 
