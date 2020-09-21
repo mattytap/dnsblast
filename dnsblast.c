@@ -111,22 +111,22 @@ blast(Context *const context, const char *const name, const uint16_t type)
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t)(msg - question);
-
+    ssize_t sendtov;
     if (context->fuzz != 0)
     {
         fuzz(question, packet_size);
     }
-    ssize_t sendtov = sendto(context->sock, question, packet_size, 0,
-                             context->ai->ai_addr, context->ai->ai_addrlen);
-    while (sendtov != (ssize_t)packet_size)
+    while (1)
     {
+        sendtov = sendto(context->sock, question, packet_size, 0,
+                         context->ai->ai_addr, context->ai->ai_addrlen);
+        if (sendtov == (ssize_t)packet_size)
+            break;
         if (errno != EAGAIN && errno != EINTR)
         {
             perror("sendto");
             exit(EXIT_FAILURE);
         }
-        sendtov = sendto(context->sock, question, packet_size, 0,
-                         context->ai->ai_addr, context->ai->ai_addrlen);
     }
     context->sent_packets++;
 
@@ -262,19 +262,21 @@ static int
 receive(Context *const context)
 {
     unsigned char buf[MAX_UDP_DATA_SIZE];
+    ssize_t recvv;
 
-    ssize_t recvv = recv(context->sock, buf, sizeof buf, 0);
-    while (recvv == (ssize_t)-1)
+    while (1)
     {
+        recvv = recv(context->sock, buf, sizeof buf, 0);
+        if (recvv != (ssize_t)-1) // received something
+            break;
         if (errno == EAGAIN)
         {
             return 1;
         }
         assert(errno == EINTR);
-        recvv = recv(context->sock, buf, sizeof buf, 0);
     }
+    printf("Received from server: '%s' (%d bytes)\n", buf, recvv);
     context->received_packets++;
-
     return 0;
 }
 
@@ -501,7 +503,8 @@ int main(int argc, char *argv[])
         printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n", host, port, sock, ai->ai_addr->sa_data, ai->ai_addrlen); //HEADER
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
-    if (deterministic_flag) {
+    if (deterministic_flag)
+    {
         srand(0U); //deterministic
     }
     else
