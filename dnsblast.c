@@ -52,6 +52,7 @@ static int
 encode_name(unsigned char **const encoded_ptr, size_t encoded_size,
             const char *const name)
 {
+    printf("%s %d %s\n", *encoded_ptr, encoded_size, name);
     unsigned char *encoded = *encoded_ptr;
     const char *name_current = name;
     int name_current_pos;
@@ -99,14 +100,16 @@ static int
 blast(Context *const context, const char *const name, const uint16_t type)
 {
     unsigned char *const question = context->question;
+    printf("'%s'\n", question);
     DNS_Header *const question_header = (DNS_Header *)question;
     unsigned char *const question_data = question + sizeof *question_header;
-    const size_t sizeof_question_data =
-        sizeof question - sizeof *question_header;
-
+    const size_t sizeof_question_data = sizeof question - sizeof *question_header;
     question_header->id = context->id++;
     unsigned char *msg = question_data;
     assert(sizeof_question_data > (size_t)2U);
+    printf("%d\n", sizeof question);
+    printf("%d\n", sizeof *question_header);
+    printf("%d\n", sizeof_question_data);
     encode_name(&msg, sizeof_question_data - (size_t)2U, name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
@@ -128,6 +131,7 @@ blast(Context *const context, const char *const name, const uint16_t type)
             exit(EXIT_FAILURE);
         }
     }
+    printf("Question sent to server: '%d' (%ld bytes)\n", *question, sendtov);
     context->sent_packets++;
 
     return 0;
@@ -217,7 +221,9 @@ get_question(char *const name, size_t name_size, uint16_t type)
     type = get_random_type();
     if (type == 12)
     {
-        get_random_ptr(name, name_size);
+        // get_random_ptr(name, name_size);
+        type = 1;
+        get_random_name(name, name_size);
     }
     else
     {
@@ -261,21 +267,22 @@ get_sock(const char *const host, const char *const port,
 static int
 receive(Context *const context)
 {
-    unsigned char buf[MAX_UDP_DATA_SIZE];
+    char answer[MAX_UDP_DATA_SIZE];
     ssize_t recvv;
 
     while (1)
     {
-        recvv = recv(context->sock, buf, sizeof buf, 0);
-        if (recvv != (ssize_t)-1) // received something
-            break;
+        recvv = recv(context->sock, (char *)answer, MAX_UDP_DATA_SIZE, MSG_WAITALL);
+        if (recvv != (ssize_t)-1)
+            break; // received something
         if (errno == EAGAIN)
         {
             return 1;
         }
         assert(errno == EINTR);
     }
-    printf("Received from server: '%s' (%d bytes)\n", buf, recvv);
+    answer[recvv] = '\0';
+    printf("Answer from server     : '%d' (%ld bytes)\n", *answer, recvv);
     context->received_packets++;
     return 0;
 }
@@ -393,7 +400,7 @@ int main(int argc, char *argv[])
     unsigned long pps = strtoul("1", NULL, 10);
     unsigned long send_count = strtoul("10", NULL, 10);
     int sock;
-    uint16_t type = 12U;
+    uint16_t type = 1U;
     _Bool fuzz = 0;
     int opt;
     int timeout;
