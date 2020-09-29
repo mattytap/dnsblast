@@ -1,25 +1,23 @@
 
 #include "dnsblast.h"
 
-/* Flag set by ‘--verbose’. */
-static int verbose_flag, deterministic_flag;
-
-static unsigned long long
-get_nanoseconds(void)
-{
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-
-    return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
-}
-
 static int
 init_context(Context *const context, const int sock,
-             const struct addrinfo *const ai, const _Bool fuzz)
+             const struct addrinfo *const ai, const _Bool fuzz, unsigned long timeout)
 {
     const unsigned long long now = get_nanoseconds();
     *context = (Context){
-        .received_packets = 0UL, .sent_packets = 0UL, .last_status_update = now, .startup_date = now, .sock = sock, .ai = ai, .fuzz = fuzz, .sending = 1};
+        .received_packets = 0UL,
+        .sent_packets = 0UL,
+        .last_status_update = now,
+        .startup_date = now,
+        .datagram_start[0] = 0ULL,
+        .timeout = timeout,
+        .sock = sock,
+        .ai = ai,
+        .id = 0,
+        .fuzz = fuzz,
+        .sending = 1};
 
     DNS_Header *const question_header = (DNS_Header *)context->question;
     *question_header = (DNS_Header){
@@ -52,7 +50,6 @@ static int
 encode_name(unsigned char **const encoded_ptr, size_t encoded_size,
             const char *const name)
 {
-    printf("%s %d %s\n", *encoded_ptr, encoded_size, name);
     unsigned char *encoded = *encoded_ptr;
     const char *name_current = name;
     int name_current_pos;
@@ -100,21 +97,20 @@ static int
 blast(Context *const context, const char *const name, const uint16_t type)
 {
     unsigned char *const question = context->question;
-    printf("'%s'\n", question);
     DNS_Header *const question_header = (DNS_Header *)question;
     unsigned char *const question_data = question + sizeof *question_header;
-    const size_t sizeof_question_data = sizeof question - sizeof *question_header;
+    const size_t sizeof_question_data =
+        sizeof question - sizeof *question_header;
     question_header->id = context->id++;
     unsigned char *msg = question_data;
     assert(sizeof_question_data > (size_t)2U);
-    printf("%d\n", sizeof question);
-    printf("%d\n", sizeof *question_header);
-    printf("%d\n", sizeof_question_data);
     encode_name(&msg, sizeof_question_data - (size_t)2U, name);
     PUT_HTONS(msg, type);
     PUT_HTONS(msg, CLASS_IN);
     const size_t packet_size = (size_t)(msg - question);
     ssize_t sendtov;
+    unsigned long send_time = 0;
+    context->datagram_start[question_header->id] = get_nanoseconds();
     if (context->fuzz != 0)
     {
         fuzz(question, packet_size);
@@ -123,17 +119,20 @@ blast(Context *const context, const char *const name, const uint16_t type)
     {
         sendtov = sendto(context->sock, question, packet_size, 0,
                          context->ai->ai_addr, context->ai->ai_addrlen);
+        send_time = (get_nanoseconds() - context->datagram_start[question_header->id]) / 1000;
         if (sendtov == (ssize_t)packet_size)
-            break;
+            break; // send single datagram
         if (errno != EAGAIN && errno != EINTR)
         {
             perror("sendto");
             exit(EXIT_FAILURE);
         }
     }
-    printf("Question sent to server: '%d' (%ld bytes)\n", *question, sendtov);
+    if (verbose_flag)
+    {
+        printf("\rsock: %d  Question: %2d\t\b\b\b%s\b\b\b\b\b\t\t  Question sent to server:  %4u (%2ld bytes)  Duration: [%3ld msecs]", context->sock, type, name, question_header->id + 1U, sendtov, send_time);
+    }
     context->sent_packets++;
-
     return 0;
 }
 
@@ -221,9 +220,7 @@ get_question(char *const name, size_t name_size, uint16_t type)
     type = get_random_type();
     if (type == 12)
     {
-        // get_random_ptr(name, name_size);
-        type = 1;
-        get_random_name(name, name_size);
+        get_random_ptr(name, name_size);
     }
     else
     {
@@ -269,6 +266,8 @@ receive(Context *const context)
 {
     char answer[MAX_UDP_DATA_SIZE];
     ssize_t recvv;
+    unsigned int received_id;
+    unsigned long long now, elapsed;
 
     while (1)
     {
@@ -282,8 +281,16 @@ receive(Context *const context)
         assert(errno == EINTR);
     }
     answer[recvv] = '\0';
-    printf("Answer from server     : '%d' (%ld bytes)\n", *answer, recvv);
+    received_id = ((unsigned char)answer[1] << 8) + (unsigned char)answer[0];
+    now = get_nanoseconds();
+    elapsed = (now - context->datagram_start[received_id]) / 1000;
+    if (verbose_flag)
+    {
+        printf("\r\t\t\t\t\t\t\t\t\t\t\t\t\t\tAnswer from server:  %4d (%3ld bytes)\tQuery time (ans): [%4llu msec] ", received_id + 1U, recvv, elapsed / 1000ULL);
+        printf("\n");
+    }
     context->received_packets++;
+
     return 0;
 }
 
@@ -291,20 +298,21 @@ static int
 update_status(const Context *const context)
 {
     const unsigned long long now = get_nanoseconds();
-    const unsigned long long elapsed = now - context->startup_date;
-    unsigned long long rate =
-        context->received_packets * 1000000000ULL / elapsed;
-    if (rate > context->pps)
-    {
-        rate = context->pps;
-    }
-    printf("Sent: [%lu] - Received: [%lu] - Reply rate: [%llu pps] - "
-           "Ratio: [%.2f%%]  \r",
-           context->sent_packets, context->received_packets, rate,
-           (double)context->received_packets * 100.0 /
-               (double)context->sent_packets);
-    if (verbose_flag)
-        printf("\n");
+    const double elapsed = (now - context->startup_date) / 1000000;
+    double rate =
+        (double)context->received_packets * 1000ULL / (double)elapsed;
+    if (!verbose_flag)
+        printf("\rSent: [%4lu] - Received: [%4lu] - Target rate: [%4ld pps] - Reply rate: [%5.1f pps] - "
+               "Ratio: [%.2f%%]",
+               context->sent_packets, context->received_packets, context->pps, rate,
+               (double)context->received_packets * 100.0 /
+                   (double)context->sent_packets);
+    if ((verbose_flag) && (context->sent_packets > 1022))
+        printf("\rS: [%4lu] - R: [%4lu] - S: [%4ld pps] - R: [%5.1f pps] - "
+               "R: [%.2f%%]\n",
+               context->sent_packets, context->received_packets, context->pps, rate,
+               (double)context->received_packets * 100.0 /
+                   (double)context->sent_packets);
     fflush(stdout);
 
     return 0;
@@ -315,7 +323,7 @@ periodically_update_status(Context *const context)
 {
     unsigned long long now = get_nanoseconds();
 
-    if (now - context->last_status_update < UPDATE_STATUS_PERIOD)
+    if ((now - context->last_status_update < UPDATE_STATUS_PERIOD) && !debug_flag)
     {
         return 1;
     }
@@ -338,39 +346,50 @@ empty_receive_queue(Context *const context)
 static int
 throttled_receive(Context *const context)
 {
-    unsigned long long now = get_nanoseconds(), now2;
-    const unsigned long long elapsed = now - context->startup_date;
-    const unsigned long long max_packets =
-        context->pps * elapsed / 1000000000UL;
+    unsigned long long throttle_receive_start = get_nanoseconds(), now2;
+    const double elapsed = (throttle_receive_start - context->startup_date) / 1000000;
+    const double max_packets_allowed_up_to_this_point =
+        (double)context->pps * (double)elapsed / 1000;
+    if (debug_flag)
+        printf("\nmax_packets_allowed_up_to_this_point: %5.1f\n", max_packets_allowed_up_to_this_point);
 
-    if (context->sending == 1 && context->sent_packets <= max_packets)
+    if (context->sending == 1 && context->sent_packets <= max_packets_allowed_up_to_this_point)
     {
         empty_receive_queue(context);
     }
-    const unsigned long long excess = context->sent_packets - max_packets;
-    const unsigned long long time_to_wait = excess / context->pps;
-    int remaining_time = (int)(time_to_wait * 1000ULL);
+    const double no_of_packets_ahead = context->sent_packets - max_packets_allowed_up_to_this_point;
+    const double seconds_ahead = (double)no_of_packets_ahead / (double)context->pps; //the more beehibg, he longer the catchup time
+    int milliseconds_ahead = (double)(seconds_ahead * 1000ULL);
     int ret;
     struct pollfd pfd = {.fd = context->sock,
                          .events = POLLIN | POLLERR};
     if (context->sending == 0)
     {
-        remaining_time = -1;
+        milliseconds_ahead = context->timeout; //lock socket for [-t timeout] otherwise wnd in an expensive CPU loop
     }
-    else if (remaining_time < 0)
+    else if (milliseconds_ahead < 0)
     {
-        remaining_time = 0;
+        milliseconds_ahead = 0; //runnung behind so no forced delay, but check for any waiting answers before moving on
     }
     do
     {
-        ret = poll(&pfd, (nfds_t)1, remaining_time);
+        ret = poll(&pfd, (nfds_t)1, milliseconds_ahead); // throttles pps here
+        if ((ret == 0) && (context->sending == 0))
+        {
+            context->failed_packets++;
+            return 1;
+        }
         if (ret == 0)
         {
+            if (debug_flag)
+                printf("Milliseconds ahead: %d POLL = NOTHING WAITING\n", milliseconds_ahead);
             periodically_update_status(context);
             return 0;
         }
         if (ret == -1)
         {
+            if (debug_flag)
+                printf("Milliseconds ahead: %d recv() TIMED OUT - recv() TIMED OUT\n", milliseconds_ahead);
             if (errno != EAGAIN && errno != EINTR)
             {
                 perror("poll");
@@ -378,12 +397,21 @@ throttled_receive(Context *const context)
             }
             continue;
         }
+        else
+        {
+            if (debug_flag)
+                printf("Milliseconds left ahead: %d \n", milliseconds_ahead); // something(s) waiting - ret is +ve
+        }
+
         assert(ret == 1);
         empty_receive_queue(context);
         now2 = get_nanoseconds();
-        remaining_time -= (now2 - now) / 1000;
-        now = now2;
-    } while (remaining_time > 0);
+        milliseconds_ahead -= ((now2 - throttle_receive_start) / 1000000);
+        if (debug_flag)
+            printf("\nMilliseconds ahead before throttle loop: %d\n", milliseconds_ahead);
+        throttle_receive_start = now2;
+        // printf("loop\n");
+    } while (milliseconds_ahead > 0);
 
     return 0;
 }
@@ -403,32 +431,17 @@ int main(int argc, char *argv[])
     uint16_t type = 1U;
     _Bool fuzz = 0;
     int opt;
-    int timeout;
-
-    static const struct option longopts[] = {
-        {"port", required_argument, NULL, 'p'},
-        {"count", required_argument, NULL, 'c'},
-        {"pps", required_argument, NULL, 's'},
-        {"timeout", required_argument, NULL, 't'},
-        {"fuzz", no_argument, NULL, 'f'},
-        {"deterministic", no_argument, &deterministic_flag, 1},
-        {"random", no_argument, &deterministic_flag, 0},
-        {"verbose", no_argument, &verbose_flag, '1'},
-        {"version", no_argument, NULL, 'V'},
-        {"help", no_argument, NULL, 'h'},
-        {NULL, 0, NULL, 0}};
+    unsigned long timeout = strtoul("2000", NULL, 10);
 
     // put ':' in the starting of the
     // string so that program can
     //distinguish between '?' and ':'
-    printf("options: %d\n", argc);
 
-    if (argc < 2 || argc > 9)
+    if (argc < 2 || argc > 11)
     {
         usage();
     }
 
-    printf("option: %i\n", *argv[1]);
     host = argv[1];
     argv++;
     argc--;
@@ -445,23 +458,20 @@ int main(int argc, char *argv[])
         {
         case 'h':
             usage();
-            exit;
+            exit(1);
         case 'p':
             portl = atol(optarg);
             sprintf(porta, "%ld", portl);
-            printf("port: %s\n", porta);
             port = porta;
             break;
         case 'c':
             send_count = strtoul(optarg, NULL, 10);
-            printf("send count: %s\n", optarg);
             break;
         case 's':
             pps = strtoul(optarg, NULL, 10);
-            printf("pps: %s\n", optarg);
             break;
         case 't':
-            pps = strtoul(optarg, NULL, 10);
+            timeout = strtoul(optarg, NULL, 10);
             printf("timeout: %s\n", optarg);
             break;
         case 'f':
@@ -482,6 +492,11 @@ int main(int argc, char *argv[])
     /* Instead of reporting ‘--verbose’
      and ‘--brief’ as they are encountered,
      we report the final status resulting from them. */
+    if (debug_flag)
+    {
+        verbose_flag = 1;
+        puts("debug flag is set");
+    }
     if (verbose_flag)
         puts("verbose flag is set");
     if (deterministic_flag)
@@ -494,13 +509,6 @@ int main(int argc, char *argv[])
         printf("extra arguments: %s\n", argv[optind]);
     }
 
-    //trim(port);
-
-    //    host = "192.168.245.5";
-    //    send_count = strtoul("1", NULL, 10);
-    //    pps = strtoul("1", NULL, 10);
-    //    port = "5335";
-
     if ((sock = get_sock(host, port, &ai)) == -1)
     {
         perror("Oops");
@@ -508,7 +516,7 @@ int main(int argc, char *argv[])
     }
     if (verbose_flag)
         printf("A404 HOST:%s PORT:%s SOCK:%d AI_DATA:%s AI_ADDRLEN:%d\n", host, port, sock, ai->ai_addr->sa_data, ai->ai_addrlen); //HEADER
-    init_context(&context, sock, ai, fuzz);
+    init_context(&context, sock, ai, fuzz, timeout);
     context.pps = pps;
     if (deterministic_flag)
     {
@@ -525,16 +533,24 @@ int main(int argc, char *argv[])
         {
             type = get_question(name, sizeof name, type);
         }
-        if (verbose_flag)
-            printf("Question: %d %s \n", type, name);
         blast(&context, name, type);
+        unsigned long packets_received_before_throlled_receive = context.received_packets;
         throttled_receive(&context);
+        if (verbose_flag && packets_received_before_throlled_receive == context.received_packets)
+            printf("\n");
     } while (--send_count > 0UL);
     update_status(&context);
-
+    
     context.sending = 0;
-    while (context.sent_packets != context.received_packets)
+    while (context.received_packets < context.sent_packets - context.failed_packets)
     {
+        throttled_receive(&context);
+    }
+    update_status(&context);
+    if (verbose_flag && (context.received_packets < context.sent_packets))
+    {
+        context.timeout = 2000;
+        printf("\n\t\t\t\t\t\t\t\t\t\t\t\t\tMISSED SUCCESSFUL ANSWERS\n");
         throttled_receive(&context);
     }
     freeaddrinfo(ai);
