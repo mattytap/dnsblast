@@ -30,8 +30,7 @@
 
 #include "dns.h"
 
-#define MAX_UDP_DATA_SIZE (0xffff - 20U - 10U)
-#define VERBOSE (1U)
+#define MAX_UDP_DATA_SIZE (0xffff - 20U - 8U)
 
 #ifndef UPDATE_STATUS_PERIOD
 #define UPDATE_STATUS_PERIOD 500000000ULL
@@ -42,17 +41,8 @@
 #endif
 
 #define REPEATED_NAME_PROBABILITY (int)((RAND_MAX * 13854LL) / 100000LL)
-#define PTR_PROBABILITY (int)((RAND_MAX * 77662LL) / 100000LL)
 #define REFUZZ_PROBABILITY (int)((RAND_MAX * 500LL) / 100000LL)
-
-struct timeval tv;
-
-static unsigned long long
-get_nanoseconds(void)
-{
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000000000LL + tv.tv_usec * 1000LL;
-};
+#define PTR_PROBABILITY (int)((RAND_MAX * 77662LL) / 100000LL)
 
 typedef struct Context_
 {
@@ -60,20 +50,20 @@ typedef struct Context_
     const struct addrinfo *ai;
     unsigned long long last_status_update;
     unsigned long long startup_date;
-    unsigned long long datagram_start[MAX_UDP_DATA_SIZE];
     unsigned long pps;
-    unsigned long timeout;
     unsigned long received_packets;
     unsigned long sent_packets;
+    unsigned long long datagram_start[MAX_UDP_DATA_SIZE];
     unsigned long failed_packets;
+    unsigned long timeout;
     int sock;
     uint16_t id;
     _Bool fuzz;
     _Bool sending;
 } Context;
 
-/* Flag set by ‘--verbose’. */
-static int debug_flag, verbose_flag, deterministic_flag;
+/* Flags set by optget() */
+static int verbose_flag, deterministic_flag;
 
 static const struct option longopts[] = {
     {"port", required_argument, NULL, 'p'},
@@ -84,7 +74,6 @@ static const struct option longopts[] = {
     {"deterministic", no_argument, &deterministic_flag, 1},
     {"random", no_argument, &deterministic_flag, 0},
     {"verbose", no_argument, &verbose_flag, '1'},
-    {"debug", no_argument, &debug_flag, '1'},
     {"version", no_argument, NULL, 'V'},
     {"help", no_argument, NULL, 'h'},
     {NULL, 0, NULL, 0}};
@@ -97,11 +86,11 @@ typedef struct WeightedType_
 
 static const WeightedType weighted_types[] = {
     {.type = TYPE_A, .weight = (int)((RAND_MAX * 33831LL) / 100000LL)},
+    {.type = TYPE_PTR, .weight = (int)((RAND_MAX * 38831LL) / 100000LL)},
     {.type = TYPE_SOA, .weight = (int)((RAND_MAX * 803LL) / 100000LL)},
     {.type = TYPE_MX, .weight = (int)((RAND_MAX * 5073LL) / 100000LL)},
     {.type = TYPE_TXT, .weight = (int)((RAND_MAX * 2604LL) / 100000LL)},
-    {.type = TYPE_AAAA, .weight = (int)((RAND_MAX * 13858LL) / 100000LL)},
-    {.type = TYPE_PTR, .weight = (int)((RAND_MAX * 38831LL) / 100000LL)}};
+    {.type = TYPE_AAAA, .weight = (int)((RAND_MAX * 13858LL) / 100000LL)}};
 
 #ifndef SO_RCVBUFFORCE
 #define SO_RCVBUFFORCE SO_RCVBUF
