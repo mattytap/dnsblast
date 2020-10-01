@@ -63,7 +63,7 @@ typedef struct Context_
 } Context;
 
 /* Flags set by optget() */
-static int verbose_flag, deterministic_flag;
+static int verbose_flag = 0, deterministic_flag = 1;
 
 static const struct option longopts[] = {
     {"port", required_argument, NULL, 'p'},

@@ -455,6 +455,8 @@ int main(int argc, char *argv[])
         puts("verbose flag is set");
     if (deterministic_flag)
         puts("deterministic flag is set");
+    if (!deterministic_flag)
+        puts("random flag is set");
 
     for (; optind < argc; optind++)
     {
