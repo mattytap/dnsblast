@@ -257,7 +257,7 @@ receive(Context *const context)
     unsigned char buf[MAX_UDP_DATA_SIZE];
     ssize_t recvv;
     unsigned int received_id;
-    unsigned long long now, elapsed;
+    unsigned long long elapsed;
 
     while (1)
     {
@@ -272,8 +272,7 @@ receive(Context *const context)
     }
     buf[recvv] = '\0';
     received_id = ((unsigned char)buf[1] << 8) + (unsigned char)buf[0];
-    now = get_milliseconds();
-    elapsed = now - context->datagram_start[received_id];
+    elapsed = get_milliseconds() - context->datagram_start[received_id];
     if (verbose_flag)
     {
         printf("\r\t\t\t\t\t\t\t\t\t\tAnswer from server:  %4d (%3ld bytes)\tQuery time (ans): [%4llu msec] ", received_id + 1U, recvv, elapsed);
@@ -287,13 +286,14 @@ receive(Context *const context)
 static int
 update_status(const Context *const context)
 {
-    const unsigned long long now = get_milliseconds();
-    const unsigned long long elapsed = now - context->startup_date;
-    double rate =
+    const unsigned long long elapsed = get_milliseconds() - context->startup_date;
+    unsigned long long rate =
         (double)context->received_packets * 1000 / (double)elapsed;
-    if (!verbose_flag || context->sending == 0)
 
-        printf("Sent: [%4lu] - Received: [%4lu] - Reply rate: [%.3f pps] - "
+
+
+    if (!verbose_flag || context->sending == 0)
+        printf("Sent: [%4lu] - Received: [%4lu] - Reply rate: [%4llu pps] - "
                "Ratio: [%.2f%%]  \r",
                context->sent_packets, context->received_packets, rate,
                (double)context->received_packets * 100.0 /
@@ -470,9 +470,14 @@ int main(int argc, char *argv[])
     init_context(&context, sock, ai, fuzz);
     context.pps = pps;
     context.timeout = timeout;
-    srand(0U); //deterministic
-    if (!deterministic_flag)
+    if (deterministic_flag)
+    {
+        srand(0U); //deterministic
+    }
+    else
+    {
         srand(clock()); //random
+    }
     assert(send_count > 0UL);
     do
     {
@@ -494,7 +499,7 @@ int main(int argc, char *argv[])
     while (context.sent_packets != context.received_packets)
     {
         throttled_receive(&context);
-        if ((get_milliseconds() - now) / 1000 > timeout)
+        if (get_milliseconds() - now > timeout)
             break;
     }
     freeaddrinfo(ai);
