@@ -33,7 +33,7 @@
 #define MAX_UDP_DATA_SIZE (0xffff - 20U - 8U)
 
 #ifndef UPDATE_STATUS_PERIOD
-#define UPDATE_STATUS_PERIOD 500ULL
+#define UPDATE_STATUS_PERIOD 2000ULL
 #endif
 
 #ifndef MAX_UDP_BUFFER_SIZE
@@ -56,6 +56,7 @@ typedef struct Context_
     unsigned long long datagram_start[MAX_UDP_DATA_SIZE];
     unsigned long failed_packets;
     unsigned long timeout;
+    unsigned long rate;
     int sock;
     uint16_t id;
     _Bool fuzz;

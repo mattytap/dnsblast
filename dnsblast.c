@@ -284,18 +284,19 @@ receive(Context *const context)
 }
 
 static int
-update_status(const Context *const context)
+update_status(Context *const context)
 {
     const unsigned long long elapsed = get_milliseconds() - context->startup_date;
-    unsigned long long rate =
-        (double)context->received_packets * 1000 / (double)elapsed;
+    if (context->sending == 1)
+        context->rate =
+            (double)context->received_packets * 1000 / (double)elapsed;
 
 
 
     if (!verbose_flag || context->sending == 0)
-        printf("Sent: [%4lu] - Received: [%4lu] - Reply rate: [%4llu pps] - "
+        printf("Sent: [%4lu] - Received: [%4lu] - Reply rate: [%4lu pps] - "
                "Ratio: [%.2f%%]  \r",
-               context->sent_packets, context->received_packets, rate,
+               context->sent_packets, context->received_packets, context->rate,
                (double)context->received_packets * 100.0 /
                    (double)context->sent_packets);
     fflush(stdout);
@@ -396,8 +397,8 @@ int main(int argc, char *argv[])
     unsigned long pps = ULONG_MAX;
     unsigned long send_count = ULONG_MAX;
     int sock;
-    uint16_t type = 0;
-    unsigned long timeout = strtoul("250", NULL, 10);
+    uint16_t type = 0U;
+    unsigned long timeout = strtoul("600", NULL, 10);
     _Bool fuzz = 0;
 
     if (argc < 2 || argc > 11)
@@ -492,7 +493,7 @@ int main(int argc, char *argv[])
         unsigned long packets_received_before_throlled_receive = context.received_packets;
         throttled_receive(&context);
         if (verbose_flag && packets_received_before_throlled_receive == context.received_packets)
-            printf("\n");
+            putchar('\n');
     } while (--send_count > 0UL);
     update_status(&context);
 
